@@ -1,0 +1,370 @@
+{% extends 'haven/base.html' %}
+{% load static %}
+
+{% block title %}Relax Point - HAVEN{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="haven-card text-center mb-4">
+        <h1 class="display-6 mb-3 relax-section-header">
+            <i class="fas fa-spa relax-section-icon"></i> Relax Point
+        </h1>
+        <p class="lead text-muted">Your sanctuary for peace and tranquility</p>
+    </div>
+
+    <!-- Breathing Exercise Section -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="haven-card breathing-card">
+                <h4 class="mb-3"><i class="fas fa-wind text-haven-primary"></i> Guided Breathing</h4>
+                <p class="text-muted">Follow the circle as it expands and contracts</p>
+                <div class="breathing-circle mx-auto"></div>
+                <p class="text-center mt-3 breathing-text">
+                    <span id="breathingInstruction">Inhale... Hold... Exhale...</span>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="haven-card">
+                <h4 class="mb-3"><i class="fas fa-music text-haven-primary"></i> Quick Relaxation</h4>
+                <p class="text-muted">Instant calming sounds</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-haven btn-haven-secondary" onclick="playSound('ocean')">
+                        🌊 Ocean Waves
+                    </button>
+                    <button class="btn btn-haven btn-haven-accent" onclick="playSound('rain')">
+                        🌧️ Rain Sounds
+                    </button>
+                    <button class="btn btn-haven btn-haven-primary" onclick="playSound('forest')">
+                        🌲 Forest Ambience
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- YouTube Playlists Section -->
+    <div class="relax-playlists-section">
+        <h2 class="section-title mb-4">
+            <i class="fas fa-video text-haven-primary"></i> Relaxation Videos & Playlists
+        </h2>
+
+        <!-- Breathing Sessions -->
+        {% if breathing_sessions %}
+        <div class="playlist-category mb-5">
+            <h3 class="category-title">🌬️ Breathing Sessions</h3>
+            <div class="video-grid">
+                {% for item in breathing_sessions %}
+                <div class="video-card haven-card">
+                    <div class="video-embed">
+                        <iframe src="{{ item.embed_url }}" 
+                                width="100%" 
+                                height="250" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4 class="video-title">{{ item.title }}</h4>
+                        {% if item.description %}
+                        <p class="video-description">{{ item.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Yoga for Relaxation -->
+        {% if yoga_sessions %}
+        <div class="playlist-category mb-5">
+            <h3 class="category-title">🧘 Yoga for Relaxation</h3>
+            <div class="video-grid">
+                {% for item in yoga_sessions %}
+                <div class="video-card haven-card">
+                    <div class="video-embed">
+                        <iframe src="{{ item.embed_url }}" 
+                                width="100%" 
+                                height="250" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4 class="video-title">{{ item.title }}</h4>
+                        {% if item.description %}
+                        <p class="video-description">{{ item.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ASMR Videos -->
+        {% if asmr_videos %}
+        <div class="playlist-category mb-5">
+            <h3 class="category-title">🎧 ASMR Videos</h3>
+            <div class="video-grid">
+                {% for item in asmr_videos %}
+                <div class="video-card haven-card">
+                    <div class="video-embed">
+                        <iframe src="{{ item.embed_url }}" 
+                                width="100%" 
+                                height="250" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4 class="video-title">{{ item.title }}</h4>
+                        {% if item.description %}
+                        <p class="video-description">{{ item.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Chill Music -->
+        {% if chill_music %}
+        <div class="playlist-category mb-5">
+            <h3 class="category-title">🎵 Chill Music</h3>
+            <div class="video-grid">
+                {% for item in chill_music %}
+                <div class="video-card haven-card">
+                    <div class="video-embed">
+                        <iframe src="{{ item.embed_url }}" 
+                                width="100%" 
+                                height="250" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4 class="video-title">{{ item.title }}</h4>
+                        {% if item.description %}
+                        <p class="video-description">{{ item.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Empty State -->
+        {% if not breathing_sessions and not yoga_sessions and not asmr_videos and not chill_music %}
+        <div class="haven-card text-center py-5">
+            <i class="fas fa-video fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">No playlists yet</h4>
+            <p class="text-muted">Playlists will appear here once added by admin</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Relaxation Tips -->
+    <div class="haven-card mt-5">
+        <h3 class="mb-4"><i class="fas fa-lightbulb text-haven-primary"></i> Relaxation Tips</h3>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="tip-card">
+                    <i class="fas fa-heart text-haven-primary"></i>
+                    <strong>Deep Breathing:</strong> Practice 4-7-8 breathing technique
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="tip-card">
+                    <i class="fas fa-moon text-haven-accent"></i>
+                    <strong>Mindfulness:</strong> Focus on the present moment
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="tip-card">
+                    <i class="fas fa-spa text-haven-nature"></i>
+                    <strong>Progressive Relaxation:</strong> Tense and release muscle groups
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="tip-card">
+                    <i class="fas fa-leaf text-haven-secondary"></i>
+                    <strong>Nature Connection:</strong> Spend time outdoors when possible
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Breathing Circle Animation */
+.breathing-card {
+    background: linear-gradient(135deg, var(--haven-peace) 0%, var(--haven-background) 100%);
+}
+
+.breathing-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--haven-primary) 0%, var(--haven-accent) 100%);
+    animation: breathe 6s infinite;
+    box-shadow: 0 0 30px rgba(53, 78, 108, 0.3);
+}
+
+@keyframes breathe {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 30px rgba(53, 78, 108, 0.3);
+    }
+    50% { 
+        transform: scale(1.5); 
+        box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+    }
+}
+
+.breathing-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--haven-primary);
+}
+
+/* Video Grid Layout */
+.relax-playlists-section {
+    margin-top: 40px;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--haven-primary);
+    border-bottom: 3px solid var(--haven-accent);
+    padding-bottom: 15px;
+}
+
+.playlist-category {
+    margin-bottom: 50px;
+}
+
+.category-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--haven-secondary);
+    margin-bottom: 25px;
+    padding-left: 15px;
+    border-left: 4px solid var(--haven-accent);
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.video-card {
+    overflow: hidden;
+    transition: var(--haven-transition);
+    padding: 0;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--haven-shadow-hover);
+}
+
+.video-embed {
+    width: 100%;
+    background: #000;
+}
+
+.video-embed iframe {
+    width: 100%;
+    display: block;
+}
+
+.video-info {
+    padding: 20px;
+}
+
+.video-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--haven-primary);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.video-description {
+    font-size: 0.95rem;
+    color: var(--haven-text);
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+/* Relaxation Tips */
+.tip-card {
+    padding: 15px;
+    background: var(--haven-peace);
+    border-radius: var(--haven-border-radius);
+    border-left: 4px solid var(--haven-primary);
+    transition: var(--haven-transition);
+}
+
+.tip-card:hover {
+    background: var(--haven-sky);
+    transform: translateX(5px);
+}
+
+.tip-card i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .breathing-circle {
+        width: 120px;
+        height: 120px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Breathing instruction animation
+let breathingPhase = 0;
+const instructions = [
+    "Breathe in slowly...",
+    "Hold...",
+    "Breathe out slowly...",
+    "Rest..."
+];
+
+setInterval(() => {
+    const instructionElement = document.getElementById('breathingInstruction');
+    if (instructionElement) {
+        instructionElement.textContent = instructions[breathingPhase];
+        breathingPhase = (breathingPhase + 1) % instructions.length;
+    }
+}, 1500);
+
+// Placeholder for sound functionality
+function playSound(type) {
+    alert(`Playing ${type} sounds... (Sound functionality can be added with audio files)`);
+}
+</script>
+{% endblock %}

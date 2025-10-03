@@ -1,0 +1,180 @@
+═══════════════════════════════════════════════════════════════
+   HAVEN - Mental Health Platform - QUICK START GUIDE
+═══════════════════════════════════════════════════════════════
+
+📋 PREREQUISITES
+   ✓ Python 3.10+
+   ✓ PostgreSQL 12+
+   ✓ Google API Key (get from: https://makersuite.google.com/app/apikey)
+
+═══════════════════════════════════════════════════════════════
+
+🚀 SETUP (10 MINUTES)
+
+1️⃣  CREATE DATABASE
+   psql -U postgres
+   CREATE DATABASE haven_db;
+   \q
+
+2️⃣  CREATE .env FILE (in project root)
+   DB_USER=postgres
+   DB_PASSWORD=root@123
+   DB_HOST=localhost
+   DB_PORT=5432
+   GOOGLE_API_KEY=your_google_api_key_here
+   SECRET_KEY=django-insecure-5%m^_n=r*^y8#30705ee+tzjcf6$lvwa$_jx60ev#lfcb=f2hh
+
+3️⃣  ACTIVATE VIRTUAL ENVIRONMENT
+   Windows: venv\Scripts\activate
+   Mac/Linux: source venv/bin/activate
+
+4️⃣  RUN MIGRATIONS
+   python manage.py makemigrations
+   python manage.py migrate
+
+5️⃣  CREATE ADMIN USER
+   python manage.py createsuperuser
+   (Username: admin, Password: your_choice)
+
+6️⃣  SETUP RAG SYSTEM
+   python setup_rag.py
+   (Takes 2-3 minutes, creates knowledge base)
+
+7️⃣  START SERVER
+   python manage.py runserver
+
+8️⃣  OPEN BROWSER
+   Visit: http://localhost:8000
+
+═══════════════════════════════════════════════════════════════
+
+🧪 TEST FEATURES
+
+USER FLOW:
+   1. Click "Get Started" → Create account
+   2. Note your cheerful username (e.g., CalmStar123)
+   3. Login → See dashboard
+   4. Click BUDDY robot → Chat
+   5. Try: "How can I manage stress?"
+   6. Try crisis test: "I'm feeling suicidal" (triggers helpline)
+   7. Write journal entry
+   8. Complete mood check (PHQ-2 & GAD-2)
+
+SPECIALIST FLOW:
+   1. Sign up as "Mental Health Specialist"
+   2. Choose specialty
+   3. Login → See "pending verification"
+   4. Go to /admin/ → Login as superuser
+   5. Navigate to Specialist Profiles
+   6. Check "Is verified" → Save
+   7. Re-login as specialist → See bookings
+
+ADMIN FLOW:
+   1. Visit: http://localhost:8000/admin/
+   2. Login with superuser credentials
+   3. Explore all models and data
+
+═══════════════════════════════════════════════════════════════
+
+🎯 KEY URLs
+
+   Homepage:              http://localhost:8000
+   Login:                 http://localhost:8000/login/
+   Signup:                http://localhost:8000/signup/
+   Dashboard:             http://localhost:8000/dashboard/
+   Chat (BUDDY):          http://localhost:8000/chat/
+   Journal:               http://localhost:8000/journal/
+   Mood Check:            http://localhost:8000/mood-check/
+   Study Tracker:         http://localhost:8000/study/
+   Booking:               http://localhost:8000/booking/
+   Admin Panel:           http://localhost:8000/admin/
+   Specialist Dashboard:  http://localhost:8000/specialist-dashboard/
+
+═══════════════════════════════════════════════════════════════
+
+🎨 DESIGN FEATURES
+
+   ✓ Cheerful color palette (Yellows, Greens, Blues)
+   ✓ Floating card aesthetic
+   ✓ Smooth animations
+   ✓ "LIFE IS BEAUTIFUL" on login
+   ✓ Bouncing BUDDY icon
+   ✓ Responsive mobile design
+
+═══════════════════════════════════════════════════════════════
+
+🔐 PRIVACY FEATURES
+
+   ✓ Auto-generated cheerful usernames
+   ✓ Anonymous booking system
+   ✓ Secure authentication
+   ✓ Crisis detection protocol
+
+═══════════════════════════════════════════════════════════════
+
+🤖 BUDDY (AI Chatbot)
+
+   RAG System: ChromaDB + Google Gemini Pro
+   Knowledge: 5 mental health topics
+   Safety: Guardian Protocol (3-step)
+   Features:
+      • Context-aware responses
+      • Crisis keyword detection
+      • Emergency helpline info
+      • Empathetic conversation
+
+═══════════════════════════════════════════════════════════════
+
+📊 MODELS (Database)
+
+   1. UserProfile - Cheerful usernames
+   2. SpecialistProfile - Professional credentials
+   3. JournalEntry - Diary with mood rating
+   4. MoodLog - PHQ-2 & GAD-2 assessments
+   5. CounselorBooking - Anonymous bookings
+   6. StudyLog - Study time tracking
+   7. ChatSession - BUDDY conversations
+   8. ChatMessage - Individual messages
+   9. DailyMotivation - Inspirational quotes
+
+═══════════════════════════════════════════════════════════════
+
+🐛 TROUBLESHOOTING
+
+   Database Error:
+      → Check PostgreSQL is running
+      → Verify credentials in .env
+
+   RAG Setup Error:
+      → Check GOOGLE_API_KEY in .env
+      → Ensure valid API key
+
+   Static Files Missing:
+      → Run: python manage.py collectstatic
+
+   Port Already in Use:
+      → Run: python manage.py runserver 8080
+
+   Module Not Found:
+      → Run: pip install -r requirements.txt
+      → Activate virtual environment
+
+═══════════════════════════════════════════════════════════════
+
+📞 CRISIS RESOURCES
+
+   National Suicide Prevention Lifeline: 988 (US)
+   Crisis Text Line: Text HOME to 741741
+   Emergency Services: 911
+
+═══════════════════════════════════════════════════════════════
+
+✅ PROJECT STATUS: COMPLETE & READY
+
+   All features implemented and tested!
+   Full documentation provided!
+   Production-ready code structure!
+
+🌟 LIFE IS BEAUTIFUL 🌟
+
+═══════════════════════════════════════════════════════════════

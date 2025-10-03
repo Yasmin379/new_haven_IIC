@@ -1,0 +1,786 @@
+{% extends 'haven/base.html' %}
+{% load static %}
+
+{% block title %}Study With Me - HAVEN{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="haven-card text-center mb-4">
+        <h1 class="display-6 mb-3 study-section-header">
+            <i class="fas fa-users study-section-icon"></i> Study With Me
+        </h1>
+        <p class="lead text-muted">Focus music, Pomodoro timer, study tips & motivation to supercharge your productivity</p>
+    </div>
+
+    <!-- Tabs for Different Sections -->
+    <div class="haven-card mb-4">
+        <ul class="nav nav-pills nav-fill study-tabs" id="studyTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pomodoro-tab" data-bs-toggle="pill" data-bs-target="#pomodoro" type="button">
+                    <i class="fas fa-clock"></i> Pomodoro Timer
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="music-tab" data-bs-toggle="pill" data-bs-target="#music" type="button">
+                    <i class="fas fa-music"></i> Study Music
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tips-tab" data-bs-toggle="pill" data-bs-target="#tips" type="button">
+                    <i class="fas fa-lightbulb"></i> Study Tips
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="motivation-tab" data-bs-toggle="pill" data-bs-target="#motivation" type="button">
+                    <i class="fas fa-rocket"></i> Motivation
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="studyTabContent">
+        <!-- Pomodoro Timer Tab -->
+        <div class="tab-pane fade show active" id="pomodoro" role="tabpanel">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="haven-card pomodoro-card text-center">
+                        <h3 class="mb-3"><i class="fas fa-tomato text-danger"></i> Pomodoro Technique</h3>
+                        <p class="text-muted mb-4">25 minutes focus • 5 minutes break • Repeat</p>
+                        
+                        <!-- Pomodoro Timer Display -->
+                        <div class="pomodoro-display" id="pomodoroDisplay">
+                            <span class="minutes">25</span>:<span class="seconds">00</span>
+                        </div>
+                        
+                        <!-- Mode Indicator -->
+                        <div class="mode-indicator mb-3">
+                            <span id="modeText" class="mode-text">Focus Session</span>
+                        </div>
+                        
+                        <!-- Session Counter -->
+                        <div class="session-counter mb-4">
+                            <span>Sessions Completed: <strong id="sessionCount">0</strong>/4</span>
+                        </div>
+                        
+                        <!-- Control Buttons -->
+                        <div class="pomodoro-controls">
+                            <button id="pomodoroStart" class="btn btn-haven btn-haven-primary btn-lg me-2">
+                                <i class="fas fa-play"></i> Start
+                            </button>
+                            <button id="pomodoroPause" class="btn btn-haven btn-haven-accent btn-lg me-2" style="display: none;">
+                                <i class="fas fa-pause"></i> Pause
+                            </button>
+                            <button id="pomodoroReset" class="btn btn-haven btn-haven-secondary btn-lg">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div id="pomodoroStatus" class="mt-3 text-muted">
+                            Ready to start your focus session
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="haven-card">
+                        <h4 class="mb-3"><i class="fas fa-info-circle text-haven-primary"></i> How Pomodoro Works</h4>
+                        <div class="pomodoro-steps">
+                            <div class="step-item">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h5>Focus for 25 minutes</h5>
+                                    <p>Work on a single task without distractions</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h5>Take a 5-minute break</h5>
+                                    <p>Stretch, walk around, or grab a drink</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h5>Repeat the cycle</h5>
+                                    <p>Complete 4 sessions for maximum productivity</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h5>Take a long break</h5>
+                                    <p>After 4 sessions, take a 15-30 minute break</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="haven-card mt-3">
+                        <h5 class="mb-3"><i class="fas fa-trophy text-haven-accent"></i> Benefits</h5>
+                        <ul class="benefits-list">
+                            <li><i class="fas fa-check-circle text-haven-primary"></i> Improved focus and concentration</li>
+                            <li><i class="fas fa-check-circle text-haven-primary"></i> Reduced mental fatigue</li>
+                            <li><i class="fas fa-check-circle text-haven-primary"></i> Better time management</li>
+                            <li><i class="fas fa-check-circle text-haven-primary"></i> Increased productivity</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Music Tab -->
+        <div class="tab-pane fade" id="music" role="tabpanel">
+            <div class="haven-card">
+                <h2 class="mb-4"><i class="fas fa-music text-haven-primary"></i> Study Music Playlists</h2>
+                <p class="text-muted mb-4">Background music to help you focus and stay productive</p>
+                
+                {% if study_music %}
+                <div class="video-grid">
+                    {% for item in study_music %}
+                    <div class="video-card haven-card">
+                        <div class="video-embed">
+                            <iframe src="{{ item.embed_url }}" 
+                                    width="100%" 
+                                    height="250" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div class="video-info">
+                            <h4 class="video-title">{{ item.title }}</h4>
+                            {% if item.description %}
+                            <p class="video-description">{{ item.description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-music fa-4x mb-3"></i>
+                    <h4>No study music playlists yet</h4>
+                    <p>Music playlists will appear here once added by admin</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Study Tips Tab -->
+        <div class="tab-pane fade" id="tips" role="tabpanel">
+            <div class="row">
+                <!-- Study Tips Videos -->
+                <div class="col-md-8 mb-4">
+                    <div class="haven-card">
+                        <h2 class="mb-4"><i class="fas fa-graduation-cap text-haven-primary"></i> Study Tips Videos</h2>
+                        
+                        {% if study_tips %}
+                        <div class="video-grid">
+                            {% for item in study_tips %}
+                            <div class="video-card haven-card">
+                                <div class="video-embed">
+                                    <iframe src="{{ item.embed_url }}" 
+                                            width="100%" 
+                                            height="250" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen>
+                                    </iframe>
+                                </div>
+                                <div class="video-info">
+                                    <h4 class="video-title">{{ item.title }}</h4>
+                                    {% if item.description %}
+                                    <p class="video-description">{{ item.description }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-video fa-4x mb-3"></i>
+                            <h4>No study tips videos yet</h4>
+                            <p>Study tips videos will appear here once added by admin</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Study Techniques Sidebar -->
+                <div class="col-md-4 mb-4">
+                    <div class="haven-card">
+                        <h4 class="mb-3"><i class="fas fa-brain text-haven-primary"></i> Study Techniques</h4>
+                        
+                        <div class="technique-list">
+                            <div class="technique-item">
+                                <i class="fas fa-clock text-haven-accent"></i>
+                                <div>
+                                    <strong>Pomodoro Technique</strong>
+                                    <p class="small text-muted">25-minute focused study intervals</p>
+                                </div>
+                            </div>
+                            
+                            <div class="technique-item">
+                                <i class="fas fa-repeat text-haven-secondary"></i>
+                                <div>
+                                    <strong>Spaced Repetition</strong>
+                                    <p class="small text-muted">Review material at increasing intervals</p>
+                                </div>
+                            </div>
+                            
+                            <div class="technique-item">
+                                <i class="fas fa-brain text-haven-primary"></i>
+                                <div>
+                                    <strong>Active Recall</strong>
+                                    <p class="small text-muted">Test yourself instead of re-reading</p>
+                                </div>
+                            </div>
+                            
+                            <div class="technique-item">
+                                <i class="fas fa-sitemap text-haven-accent"></i>
+                                <div>
+                                    <strong>Mind Mapping</strong>
+                                    <p class="small text-muted">Visual organization of concepts</p>
+                                </div>
+                            </div>
+                            
+                            <div class="technique-item">
+                                <i class="fas fa-pen text-haven-secondary"></i>
+                                <div>
+                                    <strong>Cornell Notes</strong>
+                                    <p class="small text-muted">Systematic note-taking method</p>
+                                </div>
+                            </div>
+                            
+                            <div class="technique-item">
+                                <i class="fas fa-book text-haven-primary"></i>
+                                <div>
+                                    <strong>SQ3R Method</strong>
+                                    <p class="small text-muted">Survey, Question, Read, Recite, Review</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="haven-card mt-3">
+                        <h5 class="mb-3"><i class="fas fa-star text-haven-accent"></i> Quick Tips</h5>
+                        <ul class="tips-list">
+                            <li>Study in 25-50 minute blocks</li>
+                            <li>Take regular breaks</li>
+                            <li>Stay hydrated</li>
+                            <li>Minimize distractions</li>
+                            <li>Get enough sleep</li>
+                            <li>Review material regularly</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Motivation Tab -->
+        <div class="tab-pane fade" id="motivation" role="tabpanel">
+            <div class="haven-card">
+                <h2 class="mb-4"><i class="fas fa-rocket text-haven-primary"></i> Motivational Videos</h2>
+                <p class="text-muted mb-4">Stay inspired and motivated on your learning journey</p>
+                
+                {% if motivation_videos %}
+                <div class="video-grid">
+                    {% for item in motivation_videos %}
+                    <div class="video-card haven-card">
+                        <div class="video-embed">
+                            <iframe src="{{ item.embed_url }}" 
+                                    width="100%" 
+                                    height="250" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div class="video-info">
+                            <h4 class="video-title">{{ item.title }}</h4>
+                            {% if item.description %}
+                            <p class="video-description">{{ item.description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-rocket fa-4x mb-3"></i>
+                    <h4>No motivational videos yet</h4>
+                    <p>Motivational videos will appear here once added by admin</p>
+                </div>
+                {% endif %}
+                
+                <!-- Motivational Quotes -->
+                <div class="haven-card mt-4">
+                    <h4 class="mb-3"><i class="fas fa-quote-left text-haven-accent"></i> Daily Motivation</h4>
+                    <div class="quote-grid">
+                        <div class="quote-card">
+                            <p class="quote-text">"Success is the sum of small efforts repeated day in and day out."</p>
+                            <p class="quote-author">- Robert Collier</p>
+                        </div>
+                        <div class="quote-card">
+                            <p class="quote-text">"The expert in anything was once a beginner."</p>
+                            <p class="quote-author">- Helen Hayes</p>
+                        </div>
+                        <div class="quote-card">
+                            <p class="quote-text">"Don't watch the clock; do what it does. Keep going."</p>
+                            <p class="quote-author">- Sam Levenson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Study Tabs */
+.study-tabs {
+    background: var(--haven-peace);
+    padding: 10px;
+    border-radius: var(--haven-border-radius);
+}
+
+.study-tabs .nav-link {
+    color: var(--haven-text);
+    font-weight: 600;
+    border-radius: var(--haven-border-radius);
+    padding: 12px 20px;
+    transition: var(--haven-transition);
+}
+
+.study-tabs .nav-link:hover {
+    background: var(--haven-sky);
+    color: var(--haven-primary);
+}
+
+.study-tabs .nav-link.active {
+    background: var(--haven-primary);
+    color: white;
+}
+
+/* Pomodoro Timer */
+.pomodoro-card {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+    padding: 40px;
+}
+
+.pomodoro-display {
+    font-size: 6rem;
+    font-weight: 800;
+    color: #e53e3e;
+    font-family: 'Courier New', monospace;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    margin: 30px 0;
+    padding: 30px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.pomodoro-display.focus {
+    color: #e53e3e;
+    animation: pulse 2s infinite;
+}
+
+.pomodoro-display.break {
+    color: #48bb78;
+}
+
+.pomodoro-display.paused {
+    color: #ed8936;
+}
+
+.mode-indicator {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.mode-text {
+    background: var(--haven-primary);
+    color: white;
+    padding: 8px 25px;
+    border-radius: 50px;
+}
+
+.mode-text.break-mode {
+    background: var(--haven-nature);
+}
+
+.session-counter {
+    font-size: 1.1rem;
+    color: var(--haven-text);
+}
+
+.session-counter strong {
+    color: var(--haven-primary);
+    font-size: 1.3rem;
+}
+
+/* Study Techniques */
+.technique-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.technique-item {
+    display: flex;
+    gap: 15px;
+    align-items: start;
+    padding: 15px;
+    background: var(--haven-peace);
+    border-radius: var(--haven-border-radius);
+    border-left: 4px solid var(--haven-primary);
+    transition: var(--haven-transition);
+}
+
+.technique-item:hover {
+    background: var(--haven-sky);
+    transform: translateX(5px);
+}
+
+.technique-item i {
+    font-size: 1.5rem;
+    margin-top: 5px;
+}
+
+.technique-item h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--haven-primary);
+}
+
+/* Study Steps */
+.pomodoro-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step-item {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--haven-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-content h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--haven-primary);
+    margin-bottom: 5px;
+}
+
+.step-content p {
+    font-size: 0.9rem;
+    color: var(--haven-text);
+    margin-bottom: 0;
+}
+
+/* Benefits List */
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.benefits-list li {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: var(--haven-peace);
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.benefits-list i {
+    margin-right: 10px;
+}
+
+/* Tips List */
+.tips-list {
+    list-style: none;
+    padding: 0;
+}
+
+.tips-list li {
+    padding: 8px 0;
+    padding-left: 25px;
+    position: relative;
+    color: var(--haven-text);
+}
+
+.tips-list li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--haven-accent);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Quote Cards */
+.quote-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.quote-card {
+    background: var(--haven-peace);
+    padding: 20px;
+    border-radius: var(--haven-border-radius);
+    border-left: 4px solid var(--haven-accent);
+    transition: var(--haven-transition);
+}
+
+.quote-card:hover {
+    background: var(--haven-sky);
+    transform: translateY(-3px);
+}
+
+.quote-text {
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--haven-text);
+    margin-bottom: 10px;
+}
+
+.quote-author {
+    font-size: 0.9rem;
+    color: var(--haven-gray);
+    text-align: right;
+    margin-bottom: 0;
+}
+
+/* Video Grid (same as relax page) */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.video-card {
+    overflow: hidden;
+    transition: var(--haven-transition);
+    padding: 0;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--haven-shadow-hover);
+}
+
+.video-embed {
+    width: 100%;
+    background: #000;
+}
+
+.video-embed iframe {
+    width: 100%;
+    display: block;
+}
+
+.video-info {
+    padding: 20px;
+}
+
+.video-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--haven-primary);
+    margin-bottom: 10px;
+}
+
+.video-description {
+    font-size: 0.95rem;
+    color: var(--haven-text);
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pomodoro-display {
+        font-size: 4rem;
+    }
+    
+    .quote-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Pomodoro Timer Logic
+let pomodoroInterval;
+let pomodoroMinutes = 25;
+let pomodoroSeconds = 0;
+let pomodoroRunning = false;
+let pomodoroPaused = false;
+let focusMode = true; // true = focus, false = break
+let sessionsCompleted = 0;
+
+const pomodoroDisplay = document.getElementById('pomodoroDisplay');
+const pomodoroStart = document.getElementById('pomodoroStart');
+const pomodoroPause = document.getElementById('pomodoroPause');
+const pomodoroReset = document.getElementById('pomodoroReset');
+const pomodoroStatus = document.getElementById('pomodoroStatus');
+const modeText = document.getElementById('modeText');
+const sessionCount = document.getElementById('sessionCount');
+
+function updatePomodoroDisplay() {
+    document.querySelector('.pomodoro-display .minutes').textContent = String(pomodoroMinutes).padStart(2, '0');
+    document.querySelector('.pomodoro-display .seconds').textContent = String(pomodoroSeconds).padStart(2, '0');
+}
+
+function startPomodoro() {
+    if (!pomodoroRunning || pomodoroPaused) {
+        pomodoroRunning = true;
+        pomodoroPaused = false;
+        
+        pomodoroDisplay.classList.add(focusMode ? 'focus' : 'break');
+        pomodoroDisplay.classList.remove('paused');
+        
+        pomodoroStart.style.display = 'none';
+        pomodoroPause.style.display = 'inline-block';
+        pomodoroPause.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        
+        pomodoroStatus.innerHTML = focusMode ? 
+            '<i class="fas fa-play-circle"></i> Focus mode active - Stay concentrated!' :
+            '<i class="fas fa-coffee"></i> Break time - Relax and recharge!';
+        
+        pomodoroInterval = setInterval(() => {
+            if (pomodoroSeconds === 0) {
+                if (pomodoroMinutes === 0) {
+                    // Timer finished
+                    clearInterval(pomodoroInterval);
+                    pomodoroComplete();
+                    return;
+                }
+                pomodoroMinutes--;
+                pomodoroSeconds = 59;
+            } else {
+                pomodoroSeconds--;
+            }
+            updatePomodoroDisplay();
+        }, 1000);
+    }
+}
+
+function pausePomodoro() {
+    if (pomodoroRunning && !pomodoroPaused) {
+        clearInterval(pomodoroInterval);
+        pomodoroPaused = true;
+        pomodoroDisplay.classList.remove('focus', 'break');
+        pomodoroDisplay.classList.add('paused');
+        pomodoroPause.innerHTML = '<i class="fas fa-play"></i> Resume';
+        pomodoroStatus.innerHTML = '<i class="fas fa-pause-circle"></i> Paused - Take a moment if you need!';
+    } else if (pomodoroPaused) {
+        startPomodoro();
+    }
+}
+
+function resetPomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroRunning = false;
+    pomodoroPaused = false;
+    focusMode = true;
+    pomodoroMinutes = 25;
+    pomodoroSeconds = 0;
+    
+    pomodoroDisplay.classList.remove('focus', 'break', 'paused');
+    pomodoroStart.style.display = 'inline-block';
+    pomodoroPause.style.display = 'none';
+    
+    modeText.textContent = 'Focus Session';
+    modeText.classList.remove('break-mode');
+    pomodoroStatus.innerHTML = 'Ready to start your focus session';
+    
+    updatePomodoroDisplay();
+}
+
+function pomodoroComplete() {
+    playNotificationSound();
+    
+    if (focusMode) {
+        // Focus session completed
+        sessionsCompleted++;
+        sessionCount.textContent = sessionsCompleted;
+        
+        if (sessionsCompleted % 4 === 0) {
+            // Long break after 4 sessions
+            alert('🎉 Amazing! You completed 4 focus sessions! Take a 15-30 minute break!');
+            resetPomodoro();
+        } else {
+            // Short break
+            alert('✅ Focus session complete! Time for a 5-minute break!');
+            focusMode = false;
+            pomodoroMinutes = 5;
+            pomodoroSeconds = 0;
+            modeText.textContent = 'Break Time';
+            modeText.classList.add('break-mode');
+            updatePomodoroDisplay();
+            pomodoroRunning = false;
+            pomodoroStart.style.display = 'inline-block';
+            pomodoroPause.style.display = 'none';
+            pomodoroStatus.innerHTML = '<i class="fas fa-coffee"></i> Break time! Click Start when ready.';
+        }
+    } else {
+        // Break completed
+        alert('🔄 Break complete! Ready for another focus session?');
+        focusMode = true;
+        pomodoroMinutes = 25;
+        pomodoroSeconds = 0;
+        modeText.textContent = 'Focus Session';
+        modeText.classList.remove('break-mode');
+        updatePomodoroDisplay();
+        pomodoroRunning = false;
+        pomodoroStart.style.display = 'inline-block';
+        pomodoroPause.style.display = 'none';
+        pomodoroStatus.innerHTML = '<i class="fas fa-play-circle"></i> Ready to focus!';
+    }
+}
+
+function playNotificationSound() {
+    // Browser notification sound
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTcIG2m98OScTgwOUKXh8LVkGwU5kdXwynosBSJ2yPDdkEALFF+16OumWBMKR6Hf8r5tIAUsgs/y2Yk3CBxpvfDknE4MDk6k4fC2Yh0FOI/W8Ml5KwUieMnw3Y9ACRVftOnnpVgUCkig3vK+bSAGLIPP8tiJOAgcab3w45xPDA5OpOHwtWIdBTeP1fDJeSsFI3jJ8N2PQAkVYLPp56RZFApJr97yvm0gBSyDz/LYiDgIHGm98OOcUAwOTqPh8LZiHQU3j9TwyXkrBSN4yfDcj0AJFmCz6+KkWRQKSLDe8r1tIQUsgs/y2Ig4CBxqve/jnE4MDk6k4PG2Yh0FN4/U8Ml5KwQjeMnw3I9ACRVgs+vjpVkTCkiw3vK8bSEGLILP8tiIOQgcab3w45xODA5OpODxtmIdBTiP1PDJeSsEI3jJ8NyPQAkWYLPr4aRaFApIsN7yvG0hBiyBz/LYiDkIHGq98OOcTgwPT6Tg8LViHQU4j9TwyXksAyR4yfDcj0AJFWCy6+KkWhQLSbDd8rxsIQUsgc/y2Ik5CBxqvvDjnE0MD0+k4PC1Yh0FOJDU8Mh5LAQkeMnw3I9ACRVgsuvhpFoUC0mw3fK8bCEFLIHP8tiJOQgcar7w45xNDA9PpODwtWIdBTiQ0/DIeSwEJHjH8NyOQAkVYbLr4aRaFAtJsN3yvGwhBSyBz/HYiToIHWu+8OKcTQwPT6Tg8LRhHgU4kNPwx3ksBCR4x/DcjkAJFWGy6+GkWhQLSbDd8rxsIQUrgc7y2Ik6CB1rvvDinEwMD1Ck4PC0YR4EOM/T8Md5LAUleMfw3I5ACRVhsuvhpFoVC0mw3fK7bCEELYHP8tiJOggda77w4pxMDA9QpODws2AdBTjP0/DHeCwFJnjH8NyOQAkVYbLq4aRbFAtJr93yu2wh');
+    audio.play().catch(() => {});
+}
+
+// Event listeners
+pomodoroStart.addEventListener('click', startPomodoro);
+pomodoroPause.addEventListener('click', pausePomodoro);
+pomodoroReset.addEventListener('click', resetPomodoro);
+
+// Initialize display
+updatePomodoroDisplay();
+</script>
+{% endblock %}

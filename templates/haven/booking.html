@@ -1,0 +1,61 @@
+{% extends 'haven/base.html' %}
+{% load static %}
+
+{% block title %}Book Session - HAVEN{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="haven-card text-center mb-4">
+        <h1 class="display-6 mb-3 booking-section-header">
+            <i class="fas fa-calendar-check booking-section-icon"></i> Book a Session
+        </h1>
+        <p class="lead text-muted">Connect with verified mental health specialists</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="haven-card">
+                <h4 class="mb-3"><i class="fas fa-user-md text-haven-primary"></i> Book Appointment</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="specialist" class="form-label">Select Specialist</label>
+                        <select class="form-control" id="specialist" name="specialist" required>
+                            <option value="">Choose a specialist...</option>
+                            {% for spec in specialists %}
+                            <option value="{{ spec.id }}">Dr. {{ spec.user.get_full_name }} - {{ spec.get_specialty_display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Preferred Date</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time" class="form-label">Preferred Time</label>
+                        <input type="time" class="form-control" id="time" name="time" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="concern" class="form-label">Concern</label>
+                        <textarea class="form-control" id="concern" name="concern" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-haven btn-haven-primary w-100">
+                        <i class="fas fa-paper-plane"></i> Send Booking Request
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="haven-card">
+                <h4 class="mb-3"><i class="fas fa-info-circle text-haven-primary"></i> Information</h4>
+                <p class="text-muted small">
+                    Your privacy is protected. Specialists will only see your anonymous cheerful username.
+                </p>
+                <div class="alert alert-info">
+                    <i class="fas fa-shield-alt"></i> All sessions are confidential
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

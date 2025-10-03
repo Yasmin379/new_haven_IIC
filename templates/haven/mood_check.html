@@ -1,0 +1,371 @@
+{% extends 'haven/base.html' %}
+{% load static %}
+
+{% block title %}Mood Check - HAVEN{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="haven-card text-center mb-4">
+                <h1 class="display-6 mb-3">
+                    <i class="fas fa-heart-pulse text-haven-primary"></i> Mood Check
+                </h1>
+                <p class="lead text-muted">Take a quick check-in to track your mental well-being</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    This is a brief screening tool (PHQ-2 & GAD-2) to help you monitor your mental health. 
+                    It's not a substitute for professional medical advice.
+                </div>
+            </div>
+
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <!-- PHQ-2 Section -->
+                <div class="question-card fade-in">
+                    <h4 class="mb-4 text-haven-primary">
+                        <i class="fas fa-heart"></i> PHQ-2 (Depression Screening)
+                    </h4>
+                    
+                    <div class="question mb-4">
+                        <h5 class="question-text">
+                            Over the last 2 weeks, how often have you had little interest or pleasure in doing things?
+                        </h5>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="phq2_q1" value="0" required>
+                                <span>Not at all</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="phq2_q1" value="1" required>
+                                <span>Several days</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="phq2_q1" value="2" required>
+                                <span>More than half the days</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="phq2_q1" value="3" required>
+                                <span>Nearly every day</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h5 class="question-text">
+                            Over the last 2 weeks, how often have you been feeling down, depressed, or hopeless?
+                        </h5>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="phq2_q2" value="0" required>
+                                <span>Not at all</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="phq2_q2" value="1" required>
+                                <span>Several days</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="phq2_q2" value="2" required>
+                                <span>More than half the days</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="phq2_q2" value="3" required>
+                                <span>Nearly every day</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GAD-2 Section -->
+                <div class="question-card fade-in">
+                    <h4 class="mb-4 text-haven-secondary">
+                        <i class="fas fa-brain"></i> GAD-2 (Anxiety Screening)
+                    </h4>
+                    
+                    <div class="question mb-4">
+                        <h5 class="question-text">
+                            Over the last 2 weeks, how often have you been feeling nervous, anxious, or on edge?
+                        </h5>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="gad2_q1" value="0" required>
+                                <span>Not at all</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gad2_q1" value="1" required>
+                                <span>Several days</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gad2_q1" value="2" required>
+                                <span>More than half the days</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gad2_q1" value="3" required>
+                                <span>Nearly every day</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h5 class="question-text">
+                            Over the last 2 weeks, how often have you not been able to stop or control worrying?
+                        </h5>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="gad2_q2" value="0" required>
+                                <span>Not at all</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gad2_q2" value="1" required>
+                                <span>Several days</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gad2_q2" value="2" required>
+                                <span>More than half the days</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gad2_q2" value="3" required>
+                                <span>Nearly every day</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="question-card fade-in">
+                    <h4 class="mb-4 text-haven-accent">
+                        <i class="fas fa-sticky-note"></i> Additional Notes (Optional)
+                    </h4>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Is there anything else you'd like to share about how you're feeling?</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="4" 
+                                  placeholder="Share any additional thoughts, concerns, or positive moments..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-haven btn-haven-primary btn-lg">
+                        <i class="fas fa-heart-pulse"></i> Complete Mood Check
+                    </button>
+                </div>
+            </form>
+
+            <!-- Information Section -->
+            <div class="haven-card mt-4">
+                <h4 class="mb-3">
+                    <i class="fas fa-info-circle text-haven-primary"></i> About This Assessment
+                </h4>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-haven-primary">PHQ-2 (Patient Health Questionnaire-2)</h6>
+                        <p class="text-muted small">
+                            A brief screening tool for depression. Scores range from 0-6. 
+                            A score of 3 or higher suggests the need for further evaluation.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-haven-secondary">GAD-2 (Generalized Anxiety Disorder-2)</h6>
+                        <p class="text-muted small">
+                            A brief screening tool for anxiety. Scores range from 0-6. 
+                            A score of 3 or higher suggests the need for further evaluation.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Important:</strong> This is a screening tool, not a diagnosis. 
+                    If you're experiencing significant distress or have thoughts of self-harm, 
+                    please contact a mental health professional or emergency services immediately.
+                </div>
+            </div>
+
+            <!-- Resources -->
+            <div class="haven-card mt-4">
+                <h4 class="mb-3">
+                    <i class="fas fa-phone text-haven-primary"></i> Crisis Resources
+                </h4>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="resource-card text-center">
+                            <i class="fas fa-phone fa-2x text-haven-primary mb-2"></i>
+                            <h6>National Suicide Prevention Lifeline</h6>
+                            <p class="text-muted small">988</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="resource-card text-center">
+                            <i class="fas fa-sms fa-2x text-haven-secondary mb-2"></i>
+                            <h6>Crisis Text Line</h6>
+                            <p class="text-muted small">Text HOME to 741741</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="resource-card text-center">
+                            <i class="fas fa-ambulance fa-2x text-haven-accent mb-2"></i>
+                            <h6>Emergency Services</h6>
+                            <p class="text-muted small">911</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.question-card {
+    background: var(--haven-white);
+    border-radius: var(--haven-border-radius);
+    box-shadow: var(--haven-shadow);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid var(--haven-primary);
+}
+
+.question {
+    margin-bottom: 2rem;
+}
+
+.question-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--haven-dark);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: var(--haven-peace);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--haven-transition);
+    border: 2px solid transparent;
+}
+
+.radio-option:hover {
+    background: var(--haven-sky);
+    transform: translateX(5px);
+}
+
+.radio-option input[type="radio"] {
+    margin-right: 1rem;
+    transform: scale(1.3);
+    accent-color: var(--haven-primary);
+}
+
+.radio-option input[type="radio"]:checked + span {
+    font-weight: 600;
+    color: var(--haven-dark);
+}
+
+.radio-option:has(input[type="radio"]:checked) {
+    background: var(--haven-sky);
+    border-color: var(--haven-primary);
+    transform: translateX(5px);
+}
+
+.resource-card {
+    padding: 1.5rem;
+    background: var(--haven-peace);
+    border-radius: 10px;
+    transition: var(--haven-transition);
+}
+
+.resource-card:hover {
+    background: var(--haven-sky);
+    transform: translateY(-2px);
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, var(--haven-accent) 0%, var(--haven-sky) 100%);
+    color: var(--haven-dark);
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+}
+
+@media (max-width: 768px) {
+    .radio-group {
+        gap: 0.5rem;
+    }
+    
+    .radio-option {
+        padding: 0.8rem;
+    }
+    
+    .question-text {
+        font-size: 1.1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+    
+    // Add progress tracking
+    const totalQuestions = 4;
+    let answeredQuestions = 0;
+    
+    function updateProgress() {
+        const radioButtons = document.querySelectorAll('input[type="radio"]:checked');
+        answeredQuestions = radioButtons.length;
+        
+        // You could add a progress bar here if needed
+        console.log(`Progress: ${answeredQuestions}/${totalQuestions} questions answered`);
+    }
+    
+    // Track radio button changes
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', updateProgress);
+    });
+    
+    // Add smooth scrolling between sections
+    const questionCards = document.querySelectorAll('.question-card');
+    questionCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.2}s`;
+    });
+    
+    // Add visual feedback for form completion
+    form.addEventListener('submit', function() {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+{% endblock %}

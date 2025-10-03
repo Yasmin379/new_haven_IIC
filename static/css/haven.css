@@ -1,0 +1,1181 @@
+/* ========================================
+   HAVEN - Premium Mental Health Platform
+   Professional Glassmorphism Design
+   ======================================== */
+
+:root {
+    /* Premium Color Palette */
+    --bg-primary:#abc4ff;
+    --bg-gradient-start: #89c2d9;
+    --bg-gradient-end: #b8b8ff;
+    
+    /* Vibrant Section Colors */
+    --blue-vibrant: #91bced;
+    --green-vibrant: #6BCF9B;
+    --cyan-vibrant: #5DADE2;
+    --purple-vibrant: #9B7BC6;
+    --coral-vibrant: #E88B95;
+    --violet-vibrant: #8B7BC6;
+    
+    /* Text Colors */
+    --text-white: #01497c;
+    --text-dark: #1a1a2e;
+    --text-light: rgba(89, 10, 132, 0.9);
+    --text-muted: rgba(61, 92, 203, 0.7);
+    
+    /* Glass Effect */
+    --glass-white: rgba(255, 255, 255, 0.15);
+    --glass-white-hover: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    
+    /* Effects */
+    --border-radius: 20px;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+   GLOBAL FOUNDATION
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-primary) 50%, var(--bg-gradient-end) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text-white);
+    line-height: 1.6;
+    font-size: 16px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+}
+
+/* Subtle Starry Background Effect */
+body:after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.container {
+    max-width: 1600px !important;
+    padding: 0 60px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+@media (min-width: 1920px) {
+    .container {
+        max-width: 1800px !important;
+        padding: 0 80px;
+    }
+}
+
+main {
+    min-height: calc(100vh - 200px);
+    position: relative;
+    z-index: 1;
+}
+
+/* ========================================
+   PREMIUM GLASSMORPHISM CARDS
+   ======================================== */
+
+.haven-card {
+    background: var(--glass-white);
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+    border-radius: var(--border-radius);
+    box-shadow: 
+        var(--shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--glass-border);
+    transition: var(--transition);
+    padding: 35px;
+    margin-bottom: 30px;
+}
+
+.haven-card:hover {
+    background: var(--glass-white-hover);
+    box-shadow: 
+        var(--shadow-hover),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Welcome Message Card - No Hover Effects */
+.welcome-card {
+    background: var(--glass-white);
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+    border-radius: var(--border-radius);
+    box-shadow: 
+        var(--shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--glass-border);
+    padding: 35px;
+    margin-bottom: 30px;
+    /* No hover effects - static styling */
+}
+
+/* ========================================
+   NAVIGATION - FROSTED GLASS
+   ======================================== */
+
+.haven-navbar {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    margin-bottom: 0;
+    padding: 18px 0;
+    position: relative;
+    z-index: 1000;
+}
+
+/* Dropdown Menu Fix */
+.dropdown-menu {
+    z-index: 1050 !important;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-item {
+    color: var(--text-dark);
+    padding: 10px 16px;
+    transition: var(--transition);
+}
+
+.dropdown-item:hover {
+    background: rgba(107, 155, 209, 0.1);
+    color: var(--text-dark);
+}
+
+.haven-brand {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-white);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.haven-brand i {
+    color: var(--text-white);
+    margin-right: 8px;
+}
+
+.haven-brand:hover {
+    color: var(--text-white);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-light) !important;
+    font-weight: 600;
+    margin: 0 5px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-white) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.navbar-nav .nav-link i {
+    margin-right: 6px;
+}
+
+/* ========================================
+   BUTTONS - MODERN & VIBRANT
+   ======================================== */
+
+.btn-haven {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-weight: 600;
+    color: var(--text-white);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+}
+
+.btn-haven:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    color: var(--text-white);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-haven-primary {
+    background: linear-gradient(135deg, #375482 0%, #4a6b9e 100%);
+    border: none;
+    color: white;
+}
+
+.btn-haven-primary:hover {
+    background: linear-gradient(135deg, #2d4368 0%, #3a5a8e 100%);
+    box-shadow: 0 8px 24px rgba(55, 84, 130, 0.4);
+}
+
+.btn-haven-secondary {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.btn-haven-accent {
+    background: linear-gradient(135deg, var(--purple-vibrant) 0%, var(--violet-vibrant) 100%);
+    border: none;
+    color: white;
+}
+
+/* ========================================
+   SPLIT AUTH - HAPPY KIDS THEME
+   ======================================== */
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Clean Background with Gentle Stars */
+.clean-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.floating-element {
+    position: absolute;
+    font-size: 2rem;
+    animation: gentleFloat 4s ease-in-out infinite;
+    opacity: 0.4;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.element-1 { top: 20%; left: 10%; animation-delay: 0s; }
+.element-2 { top: 30%; right: 15%; animation-delay: 1s; }
+.element-3 { bottom: 25%; left: 20%; animation-delay: 2s; }
+.element-4 { bottom: 35%; right: 10%; animation-delay: 3s; }
+
+@keyframes gentleFloat {
+    0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.4; }
+    50% { transform: translateY(-8px) rotate(5deg); opacity: 0.7; }
+}
+
+/* Single Auth Card */
+.auth-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-radius: 28px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    padding: 55px;
+    width: 480px;
+    max-width: 480px;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+/* Auth Headers */
+.auth-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.auth-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.auth-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+}
+
+.auth-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.auth-icon {
+    color: var(--blue-vibrant);
+    animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+/* Welcome Message */
+.welcome-message {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.life-beautiful {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-white);
+    margin: 0;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Decorative Elements */
+.decorative-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-emoji {
+    position: absolute;
+    font-size: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+    opacity: 0.7;
+}
+
+.floating-emoji:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.floating-emoji:nth-child(2) { top: 30%; right: 15%; animation-delay: 0.8s; }
+.floating-emoji:nth-child(3) { bottom: 25%; left: 20%; animation-delay: 1.6s; }
+.floating-emoji:nth-child(4) { bottom: 35%; right: 10%; animation-delay: 2.4s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+/* Form Styling */
+.auth-form {
+    position: relative;
+    z-index: 1;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    display: block;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 1rem;
+    color: var(--text-white);
+    transition: var(--transition);
+    width: 100%;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    outline: none;
+    color: var(--text-white);
+}
+
+/* Submit Button */
+.btn-auth-submit {
+    width: 100%;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%, 
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 16px 24px;
+    font-weight: 700;
+    color: var(--text-white);
+    font-size: 1.1rem;
+    transition: var(--transition);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-auth-submit:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.2) 100%
+    );
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Checkbox Styling */
+input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition);
+}
+
+input[type="checkbox"]:checked {
+    background: var(--green-vibrant);
+    border-color: var(--green-vibrant);
+}
+
+input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Switch Link */
+.auth-switch {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-switch a {
+    color: var(--text-white);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-switch a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-white);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-card {
+        width: 100%;
+        padding: 40px 30px;
+    }
+    
+    .floating-element {
+        font-size: 1.5rem;
+    }
+    
+    .auth-title {
+        font-size: 2rem;
+    }
+}
+
+/* ========================================
+   FORMS - PROFESSIONAL
+   ======================================== */
+
+/* =============================
+   SIGNUP SPLIT LAYOUT
+   ============================= */
+.signup-split {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.signup-left {
+    position: relative;
+    background: linear-gradient(135deg, rgba(107,155,209,0.3) 0%, rgba(155,123,198,0.25) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+}
+
+.signup-illustration {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.signup-illustration svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 20px 60px rgba(0,0,0,0.25));
+}
+
+.signup-caption {
+    color: var(--text-light);
+    margin-top: 18px;
+    font-size: 1.05rem;
+}
+
+/* Auth Illustration Image Styling */
+.auth-illustration-image {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    border-radius: 0;
+}
+
+.scene-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: left;
+    color: white;
+    padding: 24px 28px;
+    background: rgba(0, 0, 0, 0.30);
+    border-radius: 16px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* Overlay position modifiers */
+.scene-overlay--top-left {
+    top: 24px;
+    left: 24px;
+    transform: none;
+}
+.scene-overlay--top-right {
+    top: 24px;
+    right: 24px;
+    left: auto;
+    transform: none;
+}
+.scene-overlay--bottom-left {
+    bottom: 24px;
+    left: 24px;
+    top: auto;
+    transform: none;
+}
+.scene-overlay--bottom-right {
+    bottom: 24px;
+    right: 24px;
+    left: auto;
+    top: auto;
+    transform: none;
+}
+
+.scene-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(45deg, #FFE066, #FFB84D, #FF8C42);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.scene-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    line-height: 1.6;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.signup-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+}
+
+.signup-form-card {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    backdrop-filter: blur(30px) saturate(160%);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    padding: 40px 36px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.brand-title {
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--text-white);
+    margin-bottom: 6px;
+}
+
+.signup-title {
+    color: var(--text-white);
+    font-weight: 800;
+    font-size: 2rem;
+    margin: 4px 0 6px 0;
+}
+
+.signup-subtitle {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+@media (max-width: 992px) {
+  .signup-split { grid-template-columns: 1fr; }
+  .signup-left { display: none; }
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 1rem;
+    color: var(--text-white);
+    transition: var(--transition);
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    outline: none;
+    color: var(--text-white);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+}
+
+/* ========================================
+   DASHBOARD - PROFESSIONAL LAYOUT
+   ======================================== */
+
+.dashboard-container {
+    padding: 50px 0;
+}
+
+/* Welcome Header */
+.haven-card h1, .haven-card .display-6 {
+    color: var(--text-white);
+    font-weight: 700;
+}
+
+/* Motivation Card - Rainbow Border */
+.motivation-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    color: var(--text-white);
+    border-radius: 24px;
+    padding: 45px;
+    margin-bottom: 50px;
+    text-align: center;
+    box-shadow: 
+        0 12px 48px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.motivation-card:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        #6BCF9B 0%,
+        #5DADE2 25%,
+        #9B7BC6 50%,
+        #E88B95 75%,
+        #6B9BD1 100%
+    );
+}
+
+.motivation-text {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-white);
+    line-height: 1.9;
+}
+
+/* ========================================
+   FEATURE GRID - 3 COLUMNS VIBRANT
+   ======================================== */
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+    margin: 50px 0;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px) saturate(150%);
+    -webkit-backdrop-filter: blur(25px) saturate(150%);
+    border-radius: 24px;
+    padding: 45px 30px;
+    text-align: center;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: var(--transition);
+    text-decoration: none;
+    color: var(--text-white);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.feature-card:hover {
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-8px);
+    text-decoration: none;
+    color: var(--text-white);
+}
+
+/* BUDDY Card - Vibrant Blue */
+.feature-card:nth-child(1) {
+    background: linear-gradient(135deg, 
+        rgba(107, 155, 209, 0.3) 0%, 
+        rgba(107, 155, 209, 0.15) 100%
+    );
+    border-color: rgba(107, 155, 209, 0.5);
+}
+
+.feature-card:nth-child(1) .feature-icon {
+    background: linear-gradient(135deg, var(--blue-vibrant) 0%, #5a8fc4 100%);
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 10px 30px rgba(107, 155, 209, 0.4);
+}
+
+.feature-card:nth-child(1) .feature-icon i {
+    color: white !important;
+    font-size: 3.5rem !important;
+    filter: none !important;
+}
+
+/* Journal Card - Vibrant Green */
+.feature-card:nth-child(2) {
+    background: linear-gradient(135deg, 
+        rgba(107, 207, 155, 0.3) 0%, 
+        rgba(107, 207, 155, 0.15) 100%
+    );
+    border-color: rgba(107, 207, 155, 0.5);
+}
+
+.feature-card:nth-child(2) .feature-icon i {
+    color: var(--green-vibrant) !important;
+    font-size: 4.5rem;
+    filter: drop-shadow(0 0 20px rgba(107, 207, 155, 0.6)) !important;
+}
+
+/* Study Timer Card - Vibrant Cyan */
+.feature-card:nth-child(3) {
+    background: linear-gradient(135deg, 
+        rgba(93, 173, 226, 0.3) 0%, 
+        rgba(93, 173, 226, 0.15) 100%
+    );
+    border-color: rgba(93, 173, 226, 0.5);
+}
+
+.feature-card:nth-child(3) .feature-icon i {
+    color: var(--cyan-vibrant) !important;
+    font-size: 4.5rem;
+    filter: drop-shadow(0 0 20px rgba(93, 173, 226, 0.6)) !important;
+}
+
+/* Relax Point Card - Vibrant Purple */
+.feature-card:nth-child(4) {
+    background: linear-gradient(135deg, 
+        rgba(155, 123, 198, 0.3) 0%, 
+        rgba(155, 123, 198, 0.15) 100%
+    );
+    border-color: rgba(155, 123, 198, 0.5);
+}
+
+.feature-card:nth-child(4) .feature-icon i {
+    color: var(--purple-vibrant) !important;
+    font-size: 4.5rem;
+    filter: drop-shadow(0 0 20px rgba(155, 123, 198, 0.6)) !important;
+}
+
+/* Booking Card - Vibrant Coral */
+.feature-card:nth-child(5) {
+    background: linear-gradient(135deg, 
+        rgba(232, 139, 149, 0.3) 0%, 
+        rgba(232, 139, 149, 0.15) 100%
+    );
+    border-color: rgba(232, 139, 149, 0.5);
+}
+
+.feature-card:nth-child(5) .feature-icon i {
+    color: var(--coral-vibrant) !important;
+    font-size: 4.5rem;
+    filter: drop-shadow(0 0 20px rgba(232, 139, 149, 0.6)) !important;
+}
+
+/* Study With Me Card - Vibrant Violet */
+.feature-card:nth-child(6) {
+    background: linear-gradient(135deg, 
+        rgba(139, 123, 198, 0.3) 0%, 
+        rgba(139, 123, 198, 0.15) 100%
+    );
+    border-color: rgba(139, 123, 198, 0.5);
+}
+
+.feature-card:nth-child(6) .feature-icon i {
+    color: var(--violet-vibrant) !important;
+    font-size: 4.5rem;
+    filter: drop-shadow(0 0 20px rgba(139, 123, 198, 0.6)) !important;
+}
+
+.feature-icon {
+    font-size: 4.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.feature-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-white);
+}
+
+.feature-description {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.feature-card .btn-haven {
+    margin-top: auto;
+}
+
+/* ========================================
+   BUDDY CHATBOT - WAVING ANIMATION
+   ======================================== */
+
+.buddy-container {
+    text-align: center;
+    margin: 0;
+}
+
+.buddy-image {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-vibrant) 0%, #5a8fc4 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+    box-shadow: 0 10px 30px rgba(107, 155, 209, 0.4);
+    animation: buddyWave 3s ease-in-out infinite;
+    cursor: pointer;
+}
+
+.buddy-image i {
+    font-size: 3.5rem !important;
+    color: white !important;
+}
+
+@keyframes buddyWave {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-6px) rotate(-4deg); }
+    50% { transform: translateY(0) rotate(0deg); }
+    75% { transform: translateY(-6px) rotate(4deg); }
+}
+
+.buddy-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-top: 1rem;
+}
+
+.buddy-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 1200px) {
+    .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        padding: 0 20px;
+    }
+    
+    .auth-card {
+        width: 100%;
+        padding: 40px 30px;
+    }
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.text-white { color: var(--text-white) !important; }
+.text-muted { color: var(--text-muted) !important; }
+
+/* Ensure all text is visible on blue background */
+.haven-card p, .haven-card h1, .haven-card h2, .haven-card h3, 
+.haven-card h4, .haven-card h5, .haven-card h6, .haven-card span,
+.haven-card div, .haven-card a {
+    color: var(--text-white);
+}
+
+.text-muted, .small, .haven-card .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Alerts */
+.alert {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: var(--text-white);
+}
+
+/* Footer */
+.haven-footer {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+    color: var(--text-white);
+    padding: 30px 0;
+    margin-top: 60px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.haven-footer h5 {
+    color: var(--text-white);
+}
+
+.haven-footer .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* ========================================
+   WELCOME OVERLAY - BEAUTIFUL TOP MESSAGE
+   ======================================== */
+
+.welcome-overlay {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    z-index: 10;
+    text-align: center;
+    color: white;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    max-width: none;
+    animation: welcomeSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.welcome-title {
+    font-size: 2.8rem;
+    font-weight: 900;
+    margin-bottom: 12px;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(135deg, 
+        #FFE066 0%, 
+        #FFB84D 25%, 
+        #FF8C42 50%, 
+        #FF6B35 75%, 
+        #F7931E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.welcome-subtitle {
+    font-size: 1.2rem;
+    font-weight: 500;
+    opacity: 0.95;
+    line-height: 1.5;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+}
+
+/* Animation for welcome message */
+@keyframes welcomeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive adjustments for welcome overlay */
+@media (max-width: 768px) {
+    .welcome-overlay {
+        top: 20px;
+        left: 20px;
+        right: 20px;
+    }
+    
+    .welcome-title {
+        font-size: 2.2rem;
+    }
+    
+    .welcome-subtitle {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-overlay {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+    }
+    
+    .welcome-title {
+        font-size: 1.8rem;
+    }
+    
+    .welcome-subtitle {
+        font-size: 0.9rem;
+    }
+}

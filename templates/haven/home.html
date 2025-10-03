@@ -1,0 +1,82 @@
+{% extends 'haven/base.html' %}
+{% load static %}
+
+{% block title %}Welcome to HAVEN{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="auth-card fade-in">
+                    <h1 class="auth-title">
+                        <i class="fas fa-heart text-haven-primary"></i> HAVEN
+                    </h1>
+                    <p class="auth-subtitle">Your Mental Health Companion</p>
+                    <div class="life-beautiful">
+                        LIFE IS BEAUTIFUL
+                    </div>
+                    <div class="decorative-icons mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-seedling"></i>
+                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-butterfly"></i>
+                    </div>
+
+                    <p class="lead mb-4">
+                        A safe space for your mental wellness journey with AI-powered support, 
+                        professional specialists, and personalized tools.
+                    </p>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="feature-icon">
+                                <i class="fas fa-robot text-haven-primary"></i>
+                            </div>
+                            <h5>AI Companion</h5>
+                            <p class="text-muted">Chat with BUDDY, your 24/7 mental health support</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="feature-icon">
+                                <i class="fas fa-user-md text-haven-secondary"></i>
+                            </div>
+                            <h5>Specialists</h5>
+                            <p class="text-muted">Connect with verified mental health professionals</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt text-haven-accent"></i>
+                            </div>
+                            <h5>Privacy First</h5>
+                            <p class="text-muted">Your identity is protected with anonymous usernames</p>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{% url 'signup' %}" class="btn btn-haven btn-haven-primary btn-lg">
+                            <i class="fas fa-user-plus"></i> Get Started
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-haven btn-haven-secondary btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-icon i {
+    animation: float 3s ease-in-out infinite;
+}
+</style>
+{% endblock %}

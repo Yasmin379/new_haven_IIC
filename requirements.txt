@@ -1,0 +1,15 @@
+# Core Web Framework
+django~=5.2.0
+
+# PostgreSQL Connector
+psycopg2-binary
+
+# RAG & LLM Libraries
+langchain
+langchain-chroma
+langchain-google-genai
+google-generativeai
+
+# Security & Utilities
+django-cors-headers
+python-dotenv
