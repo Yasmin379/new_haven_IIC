@@ -680,30 +680,39 @@ def study_with_me_view(request):
     """Study With Me page — music, study tips, motivational videos, Pomodoro"""
     from .models import MediaPlaylist, StudyBackgroundMusic, StudyVideo
 
-    # Background music tracks (new model)
-    bg_music = StudyBackgroundMusic.objects.filter(is_active=True).order_by('order', 'title')
-
-    # Study tips videos (new model)
-    study_tips = StudyVideo.objects.filter(
-        category='tips', is_active=True
+    # ── Background music: StudyBackgroundMusic model, is_active=True ──
+    # Admin path: Haven > Background Music Tracks
+    music_tracks = StudyBackgroundMusic.objects.filter(
+        is_active=True
     ).order_by('order', 'title')
 
-    # Motivational videos (new model)
-    motivation_videos = StudyVideo.objects.filter(
-        category='motivation', is_active=True
+    # ── Study tips: StudyVideo model, category='tips' ──
+    # Admin path: Haven > Study Videos (set Category = Study Tips)
+    study_videos = StudyVideo.objects.filter(
+        category='tips',
+        is_active=True
     ).order_by('order', 'title')
 
-    # Legacy MediaPlaylist entries (kept for backward compat)
-    study_music_legacy = MediaPlaylist.objects.filter(
+    # ── Motivational videos: StudyVideo model, category='motivation' ──
+    # Admin path: Haven > Study Videos (set Category = Motivational)
+    motivational_videos = StudyVideo.objects.filter(
+        category='motivation',
+        is_active=True
+    ).order_by('order', 'title')
+
+    # Legacy MediaPlaylist fallback (only used if no StudyVideo entries exist)
+    legacy_study_music = MediaPlaylist.objects.filter(
         category='STUDY', content_type='STUDY_MUSIC', is_active=True
     ).order_by('order')
 
     context = {
-        'bg_music':          bg_music,
-        'study_tips':        study_tips,
-        'motivation_videos': motivation_videos,
-        # legacy — still shown in the music tab if no bg_music entries exist
-        'study_music':       study_music_legacy,
+        # Music tab
+        'music_tracks':       music_tracks,
+        'legacy_study_music': legacy_study_music,
+        # Study tips tab
+        'study_videos':       study_videos,
+        # Motivation tab
+        'motivational_videos': motivational_videos,
     }
 
     return render(request, 'haven/study_with_me.html', context)

@@ -310,10 +310,26 @@ class StudyBackgroundMusic(models.Model):
 
     @property
     def src(self):
-        """Return the playable audio source — file takes priority over URL."""
+        """Return the playable audio source — file takes priority over URL.
+        Returns None if neither is set, so templates can use {% if track.src %}."""
         if self.audio_file:
             return self.audio_file.url
-        return self.audio_url
+        if self.audio_url:
+            return self.audio_url
+        return None
+
+    @property
+    def audio_type(self):
+        """Guess MIME type from file extension for the <source type> attribute."""
+        src = self.src
+        if not src:
+            return 'audio/mpeg'
+        src_lower = src.lower().split('?')[0]  # strip query params
+        if src_lower.endswith('.ogg'):
+            return 'audio/ogg'
+        if src_lower.endswith('.wav'):
+            return 'audio/wav'
+        return 'audio/mpeg'  # default: mp3
 
 
 class StudyVideo(models.Model):

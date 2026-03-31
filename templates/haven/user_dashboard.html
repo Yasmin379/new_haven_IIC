@@ -212,4 +212,121 @@ function logMood(btn) {
   btn.classList.add('active');
 }
 </script>
+
+<script>
+/* FAMILY CONNECT POPUP — built entirely in JS, appended to body */
+(function () {
+  var MESSAGES = [
+    "Call your parents today \u2764\ufe0f",
+    "Your family is proud of you \ud83d\udc9b",
+    "Take a moment to connect with someone at home \ud83c\udfe1",
+    "A quick call can mean the world to them \ud83c\udf38",
+    "You are loved \u2014 let your family know you're okay \ud83d\udc9a",
+    "Share a smile with your family today \ud83d\ude0a",
+    "Home is wherever your people are \u2014 reach out \ud83e\udd0d",
+    "Your family misses you. Say hello today \ud83c\udf3c"
+  ];
+
+  /* Per-user session key — clears automatically on logout / tab close */
+  var SESSION_KEY = 'haven_fc_{{ user.username }}';
+
+  if (sessionStorage.getItem(SESSION_KEY)) return; /* already shown this session */
+
+  function build() {
+    /* keyframes */
+    var kf = document.createElement('style');
+    kf.textContent =
+      '@keyframes fcIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}' +
+      '@keyframes fcOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(20px)}}';
+    document.head.appendChild(kf);
+
+    /* popup box */
+    var box = document.createElement('div');
+    var s   = box.style;
+    s.position     = 'fixed';
+    s.top          = '220px';   /* well below navbar + hero, won't overlap Buddy */
+    s.right        = '20px';
+    s.bottom       = 'auto';
+    s.left         = 'auto';
+    s.width        = '240px';
+    s.zIndex       = '2147483647';
+    s.background   = '#f6f3ee';
+    s.border       = '1px solid #ddd6cc';
+    s.borderRadius = '13px';
+    s.boxShadow    = '0 4px 16px rgba(0,0,0,0.11)';
+    s.padding      = '12px 14px 11px';
+    s.fontFamily   = "'DM Sans','Inter',sans-serif";
+    s.fontSize     = '13px';
+    s.color        = '#2f3e34';
+    s.lineHeight   = '1.5';
+    s.animation    = 'fcIn 0.35s cubic-bezier(.22,1,.36,1) both';
+
+    var msg = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+
+    /* header row */
+    var header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;';
+
+    var left = document.createElement('div');
+    left.style.cssText = 'display:flex;align-items:center;gap:6px;';
+    left.innerHTML =
+      '<span style="font-size:0.95rem;">\ud83d\udc9b</span>' +
+      '<span style="font-weight:700;font-size:0.8rem;color:#2f3e34;">Family Connect</span>';
+
+    var closeBtn = document.createElement('button');
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.style.cssText =
+      'background:none;border:none;cursor:pointer;color:#9aaa9c;font-size:11px;' +
+      'width:20px;height:20px;border-radius:50%;display:flex;align-items:center;' +
+      'justify-content:center;padding:0;flex-shrink:0;';
+    closeBtn.innerHTML = '&#10005;';
+
+    header.appendChild(left);
+    header.appendChild(closeBtn);
+
+    /* message */
+    var msgEl = document.createElement('p');
+    msgEl.style.cssText = 'margin:0 0 10px;font-size:0.81rem;color:#3a4a3c;line-height:1.6;';
+    msgEl.textContent = msg;
+
+    /* single "Later" button */
+    var laterBtn = document.createElement('button');
+    laterBtn.textContent = 'Later';
+    laterBtn.style.cssText =
+      'width:100%;padding:7px 10px;background:transparent;border:1.5px solid #d4c9b8;' +
+      'border-radius:50px;font-size:0.75rem;font-weight:600;color:#7a8a7d;' +
+      'cursor:pointer;font-family:inherit;';
+
+    box.appendChild(header);
+    box.appendChild(msgEl);
+    box.appendChild(laterBtn);
+    document.body.appendChild(box);
+
+    /* dismiss helper */
+    function dismiss() {
+      box.style.animation = 'fcOut 0.25s ease forwards';
+      setTimeout(function () {
+        if (box.parentNode) box.parentNode.removeChild(box);
+      }, 260);
+    }
+
+    closeBtn.addEventListener('click', dismiss);
+    laterBtn.addEventListener('click', dismiss);
+
+    /* auto-dismiss after 10 s */
+    setTimeout(dismiss, 10000);
+
+    /* mark shown for this session */
+    sessionStorage.setItem(SESSION_KEY, '1');
+  }
+
+  /* 2.5 s delay after page load */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(build, 2500); });
+  } else {
+    setTimeout(build, 2500);
+  }
+})();
+</script>
 {% endblock %}
+
