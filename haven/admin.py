@@ -3,7 +3,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from .models import (
     UserProfile, SpecialistProfile, JournalEntry, CounselorBooking,
-    StudyLog, MoodLog, ChatSession, ChatMessage, DailyMotivation, MediaPlaylist
+    StudyLog, MoodLog, ChatSession, ChatMessage, DailyMotivation,
+    MediaPlaylist, StudyBackgroundMusic, StudyVideo
 )
 
 
@@ -94,3 +95,38 @@ class MediaPlaylistAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at', 'embed_url']
     list_editable = ['order', 'is_active']
     ordering = ['category', 'content_type', 'order']
+
+
+@admin.register(StudyBackgroundMusic)
+class StudyBackgroundMusicAdmin(admin.ModelAdmin):
+    list_display  = ['title', 'order', 'is_active', 'created_at']
+    list_filter   = ['is_active']
+    list_editable = ['order', 'is_active']
+    search_fields = ['title']
+    readonly_fields = ['created_at', 'src']
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'order', 'is_active')
+        }),
+        ('Audio Source (choose one)', {
+            'description': 'Upload a file OR paste a direct audio URL. File takes priority.',
+            'fields': ('audio_file', 'audio_url', 'src'),
+        }),
+    )
+
+
+@admin.register(StudyVideo)
+class StudyVideoAdmin(admin.ModelAdmin):
+    list_display  = ['title', 'category', 'order', 'is_active', 'video_id', 'created_at']
+    list_filter   = ['category', 'is_active']
+    list_editable = ['order', 'is_active']
+    search_fields = ['title', 'youtube_url']
+    readonly_fields = ['video_id', 'embed_url', 'created_at']
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'category', 'youtube_url', 'order', 'is_active')
+        }),
+        ('Resolved (read-only)', {
+            'fields': ('video_id', 'embed_url'),
+        }),
+    )

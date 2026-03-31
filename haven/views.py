@@ -13,12 +13,13 @@ from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.db import transaction
 from django.conf import settings
+from django.shortcuts import render
 
 # RAG and AI imports
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_chroma import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain.schema import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 import google.generativeai as genai
 
 from .models import (
@@ -253,6 +254,12 @@ def user_dashboard(request):
     # Get or create user profile
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     
+    # Get user's display name (first name + last name, or username as fallback)
+    if request.user.first_name or request.user.last_name:
+        user_display_name = f"{request.user.first_name} {request.user.last_name}".strip()
+    else:
+        user_display_name = request.user.username
+    
     # Get today's motivation
     today = date.today()
     try:
@@ -272,12 +279,53 @@ def user_dashboard(request):
     
     context = {
         'profile': profile,
+        'user_display_name': user_display_name,
         'motivation': motivation,
         'recent_entries': recent_entries,
         'recent_mood_logs': recent_mood_logs,
     }
     
     return render(request, 'haven/user_dashboard.html', context)
+
+
+@login_required
+def user_profile(request):
+    """User profile page showing account details"""
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        # Update user information
+        user = request.user
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.email = request.POST.get('email', '')
+        user.save()
+        
+        # Update profile
+        profile.gender = request.POST.get('gender', '')
+        profile.save()
+        
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('user_profile')
+    
+    # Get user's full name
+    full_name = ""
+    if request.user.first_name or request.user.last_name:
+        full_name = f"{request.user.first_name} {request.user.last_name}".strip()
+    else:
+        full_name = request.user.username
+    
+    # Get account creation date
+    account_created = request.user.date_joined
+    
+    context = {
+        'profile': profile,
+        'full_name': full_name,
+        'account_created': account_created,
+        'user': request.user,
+    }
+    
+    return render(request, 'haven/profile.html', context)
 
 
 @login_required
@@ -336,6 +384,30 @@ def journal_view(request):
     }
     
     return render(request, 'haven/journal.html', context)
+
+
+@login_required
+def journal_detail(request, entry_id):
+    """View a single journal entry — returns JSON for AJAX or full page"""
+    entry = get_object_or_404(JournalEntry, id=entry_id, user=request.user)
+    
+    # AJAX request from the modal
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        mood_map = {1: '😢', 2: '😕', 3: '😐', 4: '🙂', 5: '😄'}
+        return JsonResponse({
+            'id': entry.id,
+            'text': entry.text,
+            'mood_rating': entry.mood_rating,
+            'mood_emoji': mood_map.get(entry.mood_rating, ''),
+            'created_at': entry.created_at.strftime('%B %d, %Y at %I:%M %p'),
+        })
+    
+    # Non-AJAX: render full page (fallback)
+    entries = JournalEntry.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'haven/journal.html', {
+        'entries': entries,
+        'open_entry': entry,
+    })
 
 
 @login_required
@@ -554,18 +626,13 @@ def chat_with_ai(request):
 # --- General Page Views ---
 
 def home(request):
-    """Homepage - redirect to login or appropriate dashboard"""
-    if request.user.is_authenticated:
-        # Redirect authenticated users to their appropriate dashboard
-        if request.user.is_superuser:
-            return redirect('/admin/')
-        elif hasattr(request.user, 'specialistprofile'):
-            return redirect('specialist_dashboard')
-        else:
-            return redirect('user_dashboard')
-    else:
-        # Redirect unauthenticated users to login
-        return redirect('login')
+    """Kept for backward compatibility — delegates to landing"""
+    return landing(request)
+
+
+def landing(request):
+    """Landing page — always shown, even to logged-in users"""
+    return render(request, 'haven/landing.html')
 
 
 @login_required
@@ -610,32 +677,34 @@ def relax(request):
 
 @login_required
 def study_with_me_view(request):
-    """Study With Me page with music, tips, Pomodoro timer, and motivational content"""
-    from .models import MediaPlaylist
-    
-    # Get all study-related content
-    study_music = MediaPlaylist.objects.filter(
-        category='STUDY',
-        content_type='STUDY_MUSIC',
-        is_active=True
+    """Study With Me page — music, study tips, motivational videos, Pomodoro"""
+    from .models import MediaPlaylist, StudyBackgroundMusic, StudyVideo
+
+    # Background music tracks (new model)
+    bg_music = StudyBackgroundMusic.objects.filter(is_active=True).order_by('order', 'title')
+
+    # Study tips videos (new model)
+    study_tips = StudyVideo.objects.filter(
+        category='tips', is_active=True
+    ).order_by('order', 'title')
+
+    # Motivational videos (new model)
+    motivation_videos = StudyVideo.objects.filter(
+        category='motivation', is_active=True
+    ).order_by('order', 'title')
+
+    # Legacy MediaPlaylist entries (kept for backward compat)
+    study_music_legacy = MediaPlaylist.objects.filter(
+        category='STUDY', content_type='STUDY_MUSIC', is_active=True
     ).order_by('order')
-    
-    study_tips = MediaPlaylist.objects.filter(
-        category='STUDY',
-        content_type='STUDY_TIPS',
-        is_active=True
-    ).order_by('order')
-    
-    motivation = MediaPlaylist.objects.filter(
-        category='STUDY',
-        content_type='MOTIVATION',
-        is_active=True
-    ).order_by('order')
-    
+
     context = {
-        'study_music': study_music,
-        'study_tips': study_tips,
-        'motivation_videos': motivation,
+        'bg_music':          bg_music,
+        'study_tips':        study_tips,
+        'motivation_videos': motivation_videos,
+        # legacy — still shown in the music tab if no bg_music entries exist
+        'study_music':       study_music_legacy,
     }
-    
+
     return render(request, 'haven/study_with_me.html', context)
+

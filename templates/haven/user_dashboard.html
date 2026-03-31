@@ -1,315 +1,215 @@
 {% extends 'haven/base.html' %}
 {% load static %}
-
-{% block title %}Dashboard - HAVEN{% endblock %}
-
-{% block content %}
-<div class="dashboard-container">
-    <div class="container">
-        <!-- Welcome Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="welcome-card text-center">
-                    <h1 class="display-6 mb-3">
-                        Welcome back, <span class="text-haven-primary">{{ profile.cheerful_username }}</span>! 
-                        <i class="fas fa-sun text-haven-primary"></i>
-                    </h1>
-                    <p class="lead text-muted">Your mental health journey continues today</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Daily Motivation -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="motivation-card fade-in">
-                    <div class="motivation-text">
-                        <i class="fas fa-quote-left text-haven-primary"></i>
-                        {{ motivation.message }}
-                        <i class="fas fa-quote-right text-haven-primary"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Features Grid -->
-        <div class="feature-grid">
-            <!-- BUDDY Chatbot -->
-            <div class="feature-card slide-in-left">
-                <a href="{% url 'chat' %}" class="text-decoration-none">
-                    <div class="buddy-container">
-                        <div class="buddy-image">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <h3 class="buddy-text">BUDDY</h3>
-                        <p class="buddy-subtitle">Your AI companion is here to chat!</p>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Journal -->
-            <div class="feature-card slide-in-right">
-                <a href="{% url 'journal' %}" class="text-decoration-none">
-                    <div class="feature-icon">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <h3 class="feature-title">Journal</h3>
-                    <p class="feature-description">
-                        Express your thoughts and feelings in your personal digital journal.
-                    </p>
-                    <div class="btn btn-haven btn-haven-secondary">
-                        <i class="fas fa-pen"></i> Write Entry
-                    </div>
-                </a>
-            </div>
-
-            <!-- Study Tracker -->
-            <div class="feature-card slide-in-left">
-                <a href="{% url 'study' %}" class="text-decoration-none">
-                    <div class="feature-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3 class="feature-title">Study Tracker</h3>
-                    <p class="feature-description">
-                        Track your study sessions and maintain a healthy study routine.
-                    </p>
-                    <div class="btn btn-haven btn-haven-accent">
-                        <i class="fas fa-clock"></i> Log Study Time
-                    </div>
-                </a>
-            </div>
-
-            <!-- Relax Point -->
-            <div class="feature-card slide-in-right">
-                <a href="{% url 'relax' %}" class="text-decoration-none">
-                    <div class="feature-icon">
-                        <i class="fas fa-spa"></i>
-                    </div>
-                    <h3 class="feature-title">Relax Point</h3>
-                    <p class="feature-description">
-                        Your sanctuary for peace with breathing exercises, yoga, and calming content.
-                    </p>
-                    <div class="btn btn-haven btn-haven-secondary">
-                        <i class="fas fa-spa"></i> Start Relaxing
-                    </div>
-                </a>
-            </div>
-
-            <!-- Book Session -->
-            <div class="feature-card slide-in-right">
-                <a href="{% url 'booking' %}" class="text-decoration-none">
-                    <div class="feature-icon">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <h3 class="feature-title">Book Session</h3>
-                    <p class="feature-description">
-                        Connect with verified mental health specialists for professional support.
-                    </p>
-                    <div class="btn btn-haven btn-haven-primary">
-                        <i class="fas fa-user-md"></i> Find Specialist
-                    </div>
-                </a>
-            </div>
-
-            <!-- Study With Me -->
-            <div class="feature-card slide-in-left">
-                <a href="{% url 'study_with_me' %}" class="text-decoration-none">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="feature-title">Study With Me</h3>
-                    <p class="feature-description">
-                        Focus music, Pomodoro timer, study tips, and motivational videos to boost productivity.
-                    </p>
-                    <div class="btn btn-haven btn-haven-accent">
-                        <i class="fas fa-music"></i> Start Session
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="row mt-5">
-            <!-- Recent Journal Entries -->
-            <div class="col-md-6 mb-4">
-                <div class="haven-card">
-                    <h4 class="mb-3">
-                        <i class="fas fa-book text-haven-primary"></i> Recent Journal Entries
-                    </h4>
-                    {% if recent_entries %}
-                        {% for entry in recent_entries %}
-                        <div class="journal-entry">
-                            <div class="journal-date">
-                                <i class="fas fa-calendar"></i> {{ entry.created_at|date:"M d, Y" }} at {{ entry.created_at|time:"g:i A" }}
-                            </div>
-                            <div class="journal-text">
-                                {{ entry.text|truncatewords:20 }}
-                            </div>
-                            {% if entry.mood_rating %}
-                            <div class="mt-2">
-                                <small class="text-muted">
-                                    <i class="fas fa-heart"></i> Mood: 
-                                    {% for i in "12345" %}
-                                        {% if forloop.counter <= entry.mood_rating %}
-                                            <i class="fas fa-star text-haven-primary"></i>
-                                        {% else %}
-                                            <i class="far fa-star text-muted"></i>
-                                        {% endif %}
-                                    {% endfor %}
-                                </small>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                        <div class="text-center mt-3">
-                            <a href="{% url 'journal' %}" class="btn btn-haven btn-haven-secondary">
-                                <i class="fas fa-book-open"></i> View All Entries
-                            </a>
-                        </div>
-                    {% else %}
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-book fa-3x mb-3"></i>
-                            <p>No journal entries yet. Start your journey today!</p>
-                            <a href="{% url 'journal' %}" class="btn btn-haven btn-haven-secondary">
-                                <i class="fas fa-pen"></i> Write First Entry
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Mood Check & Recent Logs -->
-            <div class="col-md-6 mb-4">
-                <div class="haven-card">
-                    <h4 class="mb-3">
-                        <i class="fas fa-heart-pulse text-haven-primary"></i> Mood Check
-                    </h4>
-                    <p class="text-muted mb-3">
-                        Take a quick check-in to track your mental well-being.
-                    </p>
-                    <a href="{% url 'mood_check' %}" class="btn btn-haven btn-haven-primary w-100 mb-4">
-                        <i class="fas fa-heart-pulse"></i> Take Mood Check
-                    </a>
-
-                    {% if recent_mood_logs %}
-                    <h5 class="mb-3">Recent Check-ins</h5>
-                    {% for log in recent_mood_logs %}
-                    <div class="mood-log-entry">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>{{ log.timestamp|date:"M d" }}</strong>
-                                <small class="text-muted d-block">{{ log.timestamp|time:"g:i A" }}</small>
-                            </div>
-                            <div class="text-end">
-                                <div class="badge bg-{% if log.risk_level == 'high' %}danger{% elif log.risk_level == 'moderate' %}warning{% else %}success{% endif %}">
-                                    {{ log.risk_level|title }} Risk
-                                </div>
-                                <div class="small text-muted">
-                                    PHQ-2: {{ log.phq2_score }} | GAD-2: {{ log.gad2_score }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="haven-card text-center">
-                    <h4 class="mb-3">
-                        <i class="fas fa-bolt text-haven-primary"></i> Quick Actions
-                    </h4>
-                    <div class="row">
-                        <div class="col-md-4 col-6 mb-3">
-                            <a href="{% url 'mood_check' %}" class="btn btn-haven btn-haven-primary w-100">
-                                <i class="fas fa-heart-pulse"></i><br>
-                                <small>Mood Check</small>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-6 mb-3">
-                            <a href="{% url 'journal' %}" class="btn btn-haven btn-haven-secondary w-100">
-                                <i class="fas fa-pen"></i><br>
-                                <small>Quick Journal</small>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-6 mb-3">
-                            <a href="{% url 'booking' %}" class="btn btn-haven btn-haven-accent w-100">
-                                <i class="fas fa-calendar-check"></i><br>
-                                <small>Book Session</small>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <style>
-.mood-log-entry {
-    background: var(--haven-peace);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 0.5rem;
-    border-left: 3px solid var(--haven-primary);
-}
-
-.feature-card {
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.feature-card:hover .feature-icon {
-    transform: scale(1.1);
-    transition: var(--haven-transition);
-}
-
-.buddy-image {
-    transition: var(--haven-transition);
-}
-
-.feature-card:hover .buddy-image {
-    transform: scale(1.05);
-}
-
-.journal-entry {
-    transition: var(--haven-transition);
-}
-
-.journal-entry:hover {
-    background: var(--haven-sky);
-    transform: translateX(5px);
-}
+  /* Nuclear specificity — beats Bootstrap resets on any element */
+  html body .card-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    color: #2F3E34 !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0.5rem !important;
+    display: block !important;
+  }
+  html body .card-desc {
+    font-size: 0.84rem !important;
+    color: #7A8A7D !important;
+    line-height: 1.65 !important;
+    margin-bottom: 1rem !important;
+    display: block !important;
+  }
+  [data-theme="dark"] html body .card-title,
+  [data-theme="dark"] .card-title { color: #E8E4DC !important; }
 </style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Hero -->
+  <div class="dashboard-hero fade-in mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div>
+        <p style="opacity:0.75;font-size:0.85rem;margin-bottom:4px;position:relative;z-index:1;">Good to see you 🌿</p>
+        <h1 style="position:relative;z-index:1;">{{ user_display_name }}</h1>
+        <p class="mb-0" style="position:relative;z-index:1;">Your wellness journey continues today.</p>
+      </div>
+      <div class="d-flex gap-2 flex-wrap" style="position:relative;z-index:1;">
+        <a href="{% url 'mood_check' %}" class="btn-haven btn-accent-haven btn-sm-haven">
+          <i class="fas fa-heart"></i> Mood Check
+        </a>
+        <a href="{% url 'chat' %}" class="btn-haven btn-sm-haven"
+           style="background:rgba(255,255,255,0.18);color:white;backdrop-filter:blur(8px);">
+          <i class="fas fa-comment-dots"></i> Talk to BUDDY
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Motivation -->
+  <div class="motivation-strip fade-in-delay-1">
+    <i class="fas fa-seedling"></i>
+    <p>"{{ motivation.message|default:"Healing takes time, and asking for help is a courageous step." }}"</p>
+  </div>
+
+  <!-- Section label -->
+  <p class="section-label fade-in-delay-1">Your Wellness Tools</p>
+
+  <!-- Feature grid -->
+  <div class="dashboard-grid fade-in-delay-2">
+
+    <!-- BUDDY -->
+    <a href="{% url 'chat' %}" class="feature-card">
+      <div class="feature-icon-wrap icon-sage"><i class="fas fa-comment-dots"></i></div>
+      <span class="card-title">BUDDY — AI Chat</span>
+      <span class="card-desc">Talk to your AI companion anytime. Empathetic, private, always available.</span>
+      <span class="btn-haven btn-primary-haven btn-sm-haven">Start Chat <i class="fas fa-arrow-right"></i></span>
+    </a>
+
+    <!-- Journal -->
+    <a href="{% url 'journal' %}" class="feature-card">
+      <div class="feature-icon-wrap icon-beige"><i class="fas fa-book-open"></i></div>
+      <span class="card-title">Journal</span>
+      {% if recent_entries %}
+        <span class="card-desc" style="font-style:italic;">"{{ recent_entries.0.text|truncatewords:12 }}"</span>
+      {% else %}
+        <span class="card-desc">Express your thoughts freely in your private digital journal.</span>
+      {% endif %}
+      <span class="btn-haven btn-accent-haven btn-sm-haven">Write Entry <i class="fas fa-pen"></i></span>
+    </a>
+
+    <!-- Study Tracker -->
+    <a href="{% url 'study' %}" class="feature-card">
+      <div class="feature-icon-wrap icon-olive"><i class="fas fa-graduation-cap"></i></div>
+      <span class="card-title">Study Tracker</span>
+      <span class="card-desc">Log your study sessions and maintain a healthy academic routine.</span>
+      <div class="progress-haven mb-2"><div class="progress-haven-bar" style="width:40%;"></div></div>
+      <span class="btn-haven btn-ghost-haven btn-sm-haven">Track Now</span>
+    </a>
+
+    <!-- Relax Zone -->
+    <a href="{% url 'relax' %}" class="feature-card">
+      <div class="feature-icon-wrap icon-cream"><i class="fas fa-spa"></i></div>
+      <span class="card-title">Relax Zone</span>
+      <span class="card-desc">Breathing exercises, yoga, ASMR, and chill music — your peace sanctuary.</span>
+      <span class="btn-haven btn-accent-haven btn-sm-haven">Take a Break <i class="fas fa-leaf"></i></span>
+    </a>
+
+    <!-- Book Session -->
+    <a href="{% url 'booking' %}" class="feature-card">
+      <div class="feature-icon-wrap icon-muted"><i class="fas fa-calendar-check"></i></div>
+      <span class="card-title">Book Session</span>
+      <span class="card-desc">Connect with verified mental health specialists for professional support.</span>
+      <span class="btn-haven btn-outline-haven btn-sm-haven">Schedule</span>
+    </a>
+
+    <!-- Mood Tracker -->
+    <div class="feature-card feature-card-static">
+      <div class="feature-icon-wrap icon-warm"><i class="fas fa-face-smile"></i></div>
+      <span class="card-title">Mood Tracker</span>
+      <span class="card-desc">How are you feeling right now?</span>
+      <div class="mood-selector">
+        <button class="mood-btn" onclick="logMood(this)" title="Sad">😔</button>
+        <button class="mood-btn" onclick="logMood(this)" title="Neutral">😐</button>
+        <button class="mood-btn" onclick="logMood(this)" title="Good">🙂</button>
+        <button class="mood-btn" onclick="logMood(this)" title="Happy">😊</button>
+        <button class="mood-btn" onclick="logMood(this)" title="Great">🤩</button>
+      </div>
+      <a href="{% url 'mood_check' %}" class="btn-haven btn-outline-haven btn-sm-haven mt-2">Full Check-in</a>
+    </div>
+
+  </div>
+
+  <!-- Bottom row -->
+  <div class="row g-4 mt-1">
+
+    <div class="col-md-6">
+      <div class="haven-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin:0;color:#2F3E34;">
+            <i class="fas fa-book-open" style="color:var(--accent-dark);margin-right:8px;"></i>Recent Journal
+          </h5>
+          <a href="{% url 'journal' %}" class="btn-haven btn-ghost-haven btn-sm-haven">View All</a>
+        </div>
+        {% if recent_entries %}
+          {% for entry in recent_entries %}
+          <div class="journal-entry-card">
+            <div class="journal-entry-date">
+              <i class="fas fa-calendar-alt me-1"></i>{{ entry.created_at|date:"M d, Y" }} · {{ entry.created_at|time:"g:i A" }}
+            </div>
+            <div class="journal-entry-text">{{ entry.text|truncatewords:18 }}</div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-4" style="color:var(--text-light);">
+            <i class="fas fa-book-open fa-2x mb-2" style="opacity:0.25;"></i>
+            <p style="font-size:0.875rem;margin-bottom:0.75rem;">No entries yet.</p>
+            <a href="{% url 'journal' %}" class="btn-haven btn-primary-haven btn-sm-haven">Write First Entry</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="haven-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin:0;color:#2F3E34;">
+            <i class="fas fa-heart" style="color:var(--primary);margin-right:8px;"></i>Mood History
+          </h5>
+          <a href="{% url 'mood_check' %}" class="btn-haven btn-primary-haven btn-sm-haven">Check In</a>
+        </div>
+        {% if recent_mood_logs %}
+          {% for log in recent_mood_logs %}
+          <div class="activity-item">
+            <div class="activity-dot"
+                 style="background:{% if log.risk_level == 'high' %}#8B3A3A{% elif log.risk_level == 'moderate' %}#7A5C3A{% else %}var(--primary){% endif %};"></div>
+            <div class="flex-grow-1">
+              <div style="font-size:0.875rem;font-weight:600;">{{ log.timestamp|date:"M d" }} · {{ log.timestamp|time:"g:i A" }}</div>
+              <div style="font-size:0.78rem;color:var(--text-muted);">PHQ-2: {{ log.phq2_score }} &nbsp;|&nbsp; GAD-2: {{ log.gad2_score }}</div>
+            </div>
+            <span class="badge-haven badge-{{ log.risk_level }}">{{ log.risk_level|title }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-4" style="color:var(--text-light);">
+            <i class="fas fa-heart fa-2x mb-2" style="opacity:0.25;"></i>
+            <p style="font-size:0.875rem;margin-bottom:0.75rem;">No check-ins yet.</p>
+            <a href="{% url 'mood_check' %}" class="btn-haven btn-primary-haven btn-sm-haven">Take Mood Check</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Study With Me banner -->
+  <div class="haven-card mt-4 fade-in-delay-3"
+       style="background:linear-gradient(135deg,rgba(107,125,109,0.07),rgba(232,217,197,0.3));border-color:rgba(107,125,109,0.15);">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div>
+        <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:4px;color:#2F3E34;">
+          <i class="fas fa-users" style="color:var(--secondary);margin-right:8px;"></i>Study With Me
+        </h5>
+        <p style="color:var(--text-muted);margin:0;font-size:0.875rem;">Focus music, Pomodoro timer, study tips, and motivation videos.</p>
+      </div>
+      <a href="{% url 'study_with_me' %}" class="btn-haven btn-primary-haven btn-sm-haven">
+        Open Session <i class="fas fa-play ms-1"></i>
+      </a>
+    </div>
+  </div>
+
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add staggered animation to feature cards
-    const featureCards = document.querySelectorAll('.feature-card');
-    featureCards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.2}s`;
-    });
-    
-    // Add click animation to BUDDY
-    const buddyImage = document.querySelector('.buddy-image');
-    if (buddyImage) {
-        buddyImage.addEventListener('click', function() {
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1.05)';
-            }, 150);
-        });
-    }
-});
+function logMood(btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
 </script>
 {% endblock %}

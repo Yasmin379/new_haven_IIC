@@ -1,0 +1,279 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAVEN — Mental Wellness for Students</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: #F5EFE6;
+      color: #2F3E34;
+    }
+
+    /* ── Background ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 55% 50% at 10% 8%,  #DCC5A1 0%, transparent 60%),
+        radial-gradient(ellipse 50% 45% at 90% 92%, #b8ccb9 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 55% 48%, #d0dbd1 0%, transparent 55%),
+        #F2EDE4;
+    }
+    .blob {
+      position: fixed; border-radius: 50%;
+      filter: blur(70px); pointer-events: none; z-index: 0;
+    }
+    .b1 { width:380px; height:380px; background:#DCC5A1; top:-110px; left:-110px; opacity:.28; }
+    .b2 { width:300px; height:300px; background:#a8bfaa; bottom:-90px;  right:-90px;  opacity:.24; }
+    .b3 { width:200px; height:200px; background:#c4a882; top:58%; left:58%; transform:translate(-50%,-50%); opacity:.14; filter:blur(55px); }
+
+    /* ── Page shell ── */
+    .page {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+    }
+
+    /* ── Centered container ── */
+    .container {
+      width: 100%;
+      max-width: 560px;          /* compact column */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: riseIn .75s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes riseIn {
+      from { opacity:0; transform:translateY(22px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── Brand pill ── */
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(232,217,197,.55);
+      border: 1px solid rgba(212,196,173,.6);
+      border-radius: 50px;
+      padding: 5px 16px;
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #6B7D6D;
+      margin-bottom: 1.4rem;
+      backdrop-filter: blur(8px);
+    }
+    .bdot { width:5px; height:5px; background:#4F6F52; border-radius:50%; }
+
+    /* ── Headline ── */
+    .headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 3.2vw, 2.6rem);   /* controlled max */
+      font-weight: 700;
+      line-height: 1.18;
+      color: #2F3E34;
+      letter-spacing: -.3px;
+      margin-bottom: .6rem;
+    }
+    .headline em { font-style: italic; color: #4F6F52; }
+
+    /* ── Sub-text ── */
+    .sub {
+      font-size: .9rem;
+      color: #7A8A7D;
+      line-height: 1.7;
+      max-width: 340px;
+      margin: 0 auto 1.6rem;
+    }
+
+    /* ── Illustration ring ── */
+    .illo-ring {
+      width: 148px; height: 148px;   /* ~35% smaller than before */
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ede3d6, #d4e0d5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.6rem;
+      box-shadow: 0 8px 32px rgba(107,125,109,.13), 0 2px 8px rgba(107,125,109,.07);
+      overflow: hidden;
+      flex-shrink: 0;
+      animation: floatY 5s ease-in-out infinite;
+    }
+    @keyframes floatY {
+      0%,100% { transform:translateY(0); }
+      50%      { transform:translateY(-7px); }
+    }
+
+    /* ── Dot row ── */
+    .dots {
+      display: flex; gap: 6px;
+      justify-content: center;
+      margin-bottom: 1.6rem;
+    }
+    .dot { width:5px; height:5px; border-radius:50%; background:#c8d4c9; }
+    .dot.on { width:18px; border-radius:3px; background:#4F6F52; }
+
+    /* ── CTA button ── */
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 34px;
+      background: #4F6F52;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 18px rgba(47,62,36,.28);
+      transition: background .22s, transform .18s, box-shadow .22s;
+    }
+    .cta:hover {
+      background: #3A5A40;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(47,62,36,.36);
+      color: #fff; text-decoration: none;
+    }
+    .cta:active { transform: translateY(0); }
+    .cta svg { width:16px; height:16px; transition:transform .18s; }
+    .cta:hover svg { transform:translateX(3px); }
+
+    /* ── Footer note ── */
+    .foot {
+      margin-top: 1.4rem;
+      font-size: .75rem;
+      color: #7A8F7D;
+    }
+    .foot a { color:#4F6F52; font-weight:500; text-decoration:none; }
+    .foot a:hover { text-decoration:underline; }
+
+    /* ── Responsive ── */
+    /* Tablet */
+    @media (max-width: 768px) {
+      .illo-ring { width:130px; height:130px; }
+      .headline  { font-size: clamp(1.7rem, 5vw, 2.2rem); }
+    }
+    /* Mobile */
+    @media (max-width: 480px) {
+      .page { padding: 1.5rem 1rem; align-items: flex-start; }
+      .container { max-width: 100%; }
+      .illo-ring { width:110px; height:110px; }
+      .headline  { font-size: 1.65rem; }
+      .sub       { font-size: .85rem; }
+      .cta       { padding: 11px 28px; font-size: .85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg"></div>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <div class="page">
+    <div class="container">
+
+      <!-- Brand -->
+      <div class="brand-pill">
+        <span class="bdot"></span>HAVEN<span class="bdot"></span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="headline">
+        It's OK Not To<br>Be <em>OKAY</em>
+      </h1>
+
+      <!-- Sub -->
+      <p class="sub">
+        We are here to support your mental wellness journey —
+        gently, privately, and always.
+      </p>
+
+      <!-- Illustration -->
+      <div class="illo-ring">
+        <svg width="118" height="118" viewBox="0 0 200 200"
+             fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="100" fill="#ede3d6"/>
+          <ellipse cx="100" cy="182" rx="58" ry="28" fill="#c8a882" opacity=".35"/>
+          <rect x="87" y="140" width="26" height="24" rx="9" fill="#d4a87a" opacity=".52"/>
+          <ellipse cx="100" cy="112" rx="40" ry="44" fill="#e8c49a" opacity=".88"/>
+          <ellipse cx="100" cy="76"  rx="40" ry="24" fill="#7a5230" opacity=".50"/>
+          <ellipse cx="65"  cy="104" rx="11" ry="28" fill="#7a5230" opacity=".42"/>
+          <ellipse cx="135" cy="104" rx="11" ry="28" fill="#7a5230" opacity=".42"/>
+          <path d="M62 90 Q54 110 60 130" stroke="#7a5230" stroke-width="5" stroke-linecap="round" fill="none" opacity=".32"/>
+          <!-- closed eyes -->
+          <path d="M81 110 Q88 105 95 110" stroke="#4a2e18" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <path d="M105 110 Q112 105 119 110" stroke="#4a2e18" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <!-- lashes left -->
+          <line x1="83"  y1="109" x2="81"  y2="105" stroke="#4a2e18" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="88"  y1="107" x2="87"  y2="103" stroke="#4a2e18" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="93"  y1="109" x2="93"  y2="105" stroke="#4a2e18" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- lashes right -->
+          <line x1="107" y1="109" x2="107" y2="105" stroke="#4a2e18" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="112" y1="107" x2="113" y2="103" stroke="#4a2e18" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="117" y1="109" x2="119" y2="105" stroke="#4a2e18" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- nose -->
+          <path d="M98 118 Q100 122 102 118" stroke="#c08050" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".48"/>
+          <!-- smile -->
+          <path d="M90 128 Q100 136 110 128" stroke="#4a2e18" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <!-- blush -->
+          <ellipse cx="80"  cy="120" rx="9" ry="5.5" fill="#e8907a" opacity=".16"/>
+          <ellipse cx="120" cy="120" rx="9" ry="5.5" fill="#e8907a" opacity=".16"/>
+          <!-- leaf -->
+          <path d="M152 48 C160 36 174 42 168 56 C162 70 150 63 152 48Z" fill="#6B7D6D" opacity=".45"/>
+          <path d="M152 48 L168 56" stroke="#6B7D6D" stroke-width="1.2" opacity=".35"/>
+          <!-- small leaf -->
+          <path d="M36 148 C29 137 38 128 47 135 C56 142 49 154 36 148Z" fill="#7A8F7B" opacity=".35"/>
+          <!-- sparkles -->
+          <circle cx="148" cy="80" r="2.5" fill="#E8D9C5" opacity=".65"/>
+          <circle cx="155" cy="72" r="1.5" fill="#E8D9C5" opacity=".45"/>
+          <circle cx="50"  cy="130" r="2"  fill="#E8D9C5" opacity=".55"/>
+        </svg>
+      </div>
+
+      <!-- Dots -->
+      <div class="dots">
+        <div class="dot on"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+      <!-- CTA -->
+      <a href="{% url 'login' %}" class="cta">
+        Let Us Help You
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+
+      <!-- Footer note -->
+      <p class="foot">
+        Already have an account?&nbsp;<a href="{% url 'login' %}">Sign in</a>
+        &nbsp;·&nbsp;
+        New here?&nbsp;<a href="{% url 'signup' %}">Create account</a>
+      </p>
+
+    </div>
+  </div>
+
+</body>
+</html>

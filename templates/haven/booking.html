@@ -1,61 +1,89 @@
 {% extends 'haven/base.html' %}
 {% load static %}
-
-{% block title %}Book Session - HAVEN{% endblock %}
+{% block title %}Book Session{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="haven-card text-center mb-4">
-        <h1 class="display-6 mb-3 booking-section-header">
-            <i class="fas fa-calendar-check booking-section-icon"></i> Book a Session
-        </h1>
-        <p class="lead text-muted">Connect with verified mental health specialists</p>
+<div class="container py-4">
+  <div class="text-center mb-4 fade-in">
+    <h2 style="font-weight:800;margin-bottom:6px;font-size:1.6rem;">
+      <i class="fas fa-calendar-check" style="color:var(--primary);margin-right:10px;"></i>Book a Session
+    </h2>
+    <p style="color:var(--text-muted);font-size:0.875rem;">Connect with verified mental health specialists</p>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+    <div class="col-lg-7">
+      <div class="haven-card fade-in">
+        <h5 style="font-weight:700;margin-bottom:1.5rem;font-size:0.95rem;">
+          <i class="fas fa-user-md" style="color:var(--primary);margin-right:8px;"></i>Book Appointment
+        </h5>
+        <form method="post">
+          {% csrf_token %}
+          <div class="input-group-haven">
+            <label for="specialist">Select Specialist</label>
+            <i class="fas fa-user-md input-icon"></i>
+            <select name="specialist" id="specialist" class="haven-input" required>
+              <option value="">Choose a specialist...</option>
+              {% for spec in specialists %}
+              <option value="{{ spec.id }}">Dr. {{ spec.user.get_full_name }} — {{ spec.get_specialty_display }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="input-group-haven">
+                <label for="date">Preferred Date</label>
+                <i class="fas fa-calendar input-icon"></i>
+                <input type="date" name="date" id="date" class="haven-input" required>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="input-group-haven">
+                <label for="time">Preferred Time</label>
+                <i class="fas fa-clock input-icon"></i>
+                <input type="time" name="time" id="time" class="haven-input" required>
+              </div>
+            </div>
+          </div>
+          <div class="input-group-haven">
+            <label for="concern">What would you like to discuss?</label>
+            <textarea name="concern" id="concern" class="haven-input" rows="4"
+                      placeholder="Briefly describe your concern or what you'd like help with..."
+                      required></textarea>
+          </div>
+          <button type="submit" class="btn-haven btn-primary-haven w-100" style="justify-content:center;padding:13px;">
+            <i class="fas fa-paper-plane me-1"></i> Send Booking Request
+          </button>
+        </form>
+      </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="haven-card">
-                <h4 class="mb-3"><i class="fas fa-user-md text-haven-primary"></i> Book Appointment</h4>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="specialist" class="form-label">Select Specialist</label>
-                        <select class="form-control" id="specialist" name="specialist" required>
-                            <option value="">Choose a specialist...</option>
-                            {% for spec in specialists %}
-                            <option value="{{ spec.id }}">Dr. {{ spec.user.get_full_name }} - {{ spec.get_specialty_display }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="date" class="form-label">Preferred Date</label>
-                        <input type="date" class="form-control" id="date" name="date" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="time" class="form-label">Preferred Time</label>
-                        <input type="time" class="form-control" id="time" name="time" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="concern" class="form-label">Concern</label>
-                        <textarea class="form-control" id="concern" name="concern" rows="4" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-haven btn-haven-primary w-100">
-                        <i class="fas fa-paper-plane"></i> Send Booking Request
-                    </button>
-                </form>
-            </div>
+    <div class="col-lg-3">
+      <div class="haven-card fade-in-delay-1" style="background:rgba(232,217,197,0.2);border-color:rgba(212,196,173,0.4);">
+        <h6 style="font-weight:700;margin-bottom:1rem;font-size:0.85rem;">
+          <i class="fas fa-shield-alt" style="color:var(--primary);margin-right:8px;"></i>Your Privacy
+        </h6>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.65;">Specialists only see your anonymous username — your real identity stays private.</p>
+        <div class="alert-haven alert-success-haven mt-3" style="font-size:0.78rem;">
+          <i class="fas fa-lock me-1"></i> All sessions are fully confidential
         </div>
-        <div class="col-md-4">
-            <div class="haven-card">
-                <h4 class="mb-3"><i class="fas fa-info-circle text-haven-primary"></i> Information</h4>
-                <p class="text-muted small">
-                    Your privacy is protected. Specialists will only see your anonymous cheerful username.
-                </p>
-                <div class="alert alert-info">
-                    <i class="fas fa-shield-alt"></i> All sessions are confidential
-                </div>
-            </div>
+      </div>
+
+      {% if user_bookings %}
+      <div class="haven-card mt-3 fade-in-delay-2">
+        <h6 style="font-weight:700;margin-bottom:1rem;font-size:0.85rem;">
+          <i class="fas fa-history" style="color:var(--secondary);margin-right:8px;"></i>Your Bookings
+        </h6>
+        {% for booking in user_bookings %}
+        <div style="padding:0.75rem;background:var(--bg);border-radius:var(--radius-xs);margin-bottom:0.5rem;border-left:3px solid var(--accent-dark);">
+          <div style="font-size:0.82rem;font-weight:600;">{{ booking.specialist.user.get_full_name }}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">{{ booking.date|date:"M d" }} · {{ booking.time|time:"g:i A" }}</div>
+          <span class="badge-haven badge-{% if booking.status == 'confirmed' %}low{% elif booking.status == 'pending' %}moderate{% else %}high{% endif %}" style="margin-top:4px;">{{ booking.status|title }}</span>
         </div>
+        {% endfor %}
+      </div>
+      {% endif %}
     </div>
+  </div>
 </div>
 {% endblock %}

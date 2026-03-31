@@ -284,6 +284,85 @@ class DailyMotivation(models.Model):
         return f"Motivation for {self.date}: {self.message[:50]}..."
 
 
+class StudyBackgroundMusic(models.Model):
+    """Background music tracks for the Study With Me section"""
+    title = models.CharField(max_length=200)
+    audio_file = models.FileField(
+        upload_to='study_music/',
+        blank=True, null=True,
+        help_text="Upload an MP3/OGG/WAV file"
+    )
+    audio_url = models.URLField(
+        blank=True,
+        help_text="Or paste a direct audio URL (MP3/OGG). Leave blank if uploading a file."
+    )
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'title']
+        verbose_name = 'Background Music Track'
+        verbose_name_plural = 'Background Music Tracks'
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def src(self):
+        """Return the playable audio source — file takes priority over URL."""
+        if self.audio_file:
+            return self.audio_file.url
+        return self.audio_url
+
+
+class StudyVideo(models.Model):
+    """YouTube videos for Study Tips and Motivational sections"""
+    CATEGORY_CHOICES = [
+        ('tips',       'Study Tips'),
+        ('motivation', 'Motivational'),
+    ]
+
+    title    = models.CharField(max_length=200)
+    youtube_url = models.URLField(
+        help_text="Paste the full YouTube URL (watch?v= or youtu.be/)"
+    )
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    order    = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['category', 'order', 'title']
+        verbose_name = 'Study Video'
+        verbose_name_plural = 'Study Videos'
+
+    def __str__(self):
+        return f"[{self.get_category_display()}] {self.title}"
+
+    @property
+    def video_id(self):
+        """Extract YouTube video ID from watch?v= or youtu.be/ URLs."""
+        import re
+        url = self.youtube_url.strip()
+        # youtu.be/VIDEO_ID
+        m = re.search(r'youtu\.be/([A-Za-z0-9_-]{11})', url)
+        if m:
+            return m.group(1)
+        # watch?v=VIDEO_ID  or  /embed/VIDEO_ID
+        m = re.search(r'(?:v=|/embed/)([A-Za-z0-9_-]{11})', url)
+        if m:
+            return m.group(1)
+        return None
+
+    @property
+    def embed_url(self):
+        vid = self.video_id
+        if vid:
+            return f"https://www.youtube.com/embed/{vid}"
+        return None
+
+
 class MediaPlaylist(models.Model):
     """YouTube playlists and videos for Study and Relax sections"""
     CATEGORY_CHOICES = [

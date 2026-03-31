@@ -1,407 +1,261 @@
 {% extends 'haven/base.html' %}
 {% load static %}
-
-{% block title %}Journal - HAVEN{% endblock %}
+{% block title %}Journal{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="haven-card text-center mb-4">
-                <h1 class="display-6 mb-3 journal-section-header">
-                    <i class="fas fa-book journal-section-icon"></i> My Journal
-                </h1>
-                <p class="lead text-muted">Express your thoughts and feelings in your personal digital journal</p>
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-4 fade-in">
+    <div>
+      <h2 style="font-weight:800;margin-bottom:4px;font-size:1.6rem;">
+        <i class="fas fa-book-open" style="color:var(--accent-dark);margin-right:10px;"></i>My Journal
+      </h2>
+      <p style="color:var(--text-muted);margin:0;font-size:0.875rem;">Your private space — write freely, without judgment.</p>
+    </div>
+    <span style="font-size:0.82rem;color:var(--text-light);">{{ entries.count }} entr{{ entries.count|pluralize:"y,ies" }}</span>
+  </div>
+
+  <div class="journal-layout">
+
+    <!-- ── Write area ── -->
+    <div>
+      <div class="haven-card fade-in">
+        <h5 style="font-weight:700;margin-bottom:1.25rem;font-size:0.95rem;">
+          <i class="fas fa-pen" style="color:var(--primary);margin-right:8px;"></i>New Entry
+        </h5>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="input-group-haven">
+            <label for="text">What's on your mind today?</label>
+            <textarea name="text" id="text" class="haven-input" rows="8"
+                      placeholder="Share your thoughts, feelings, or anything on your mind..."
+                      required></textarea>
+          </div>
+          <div class="mb-3">
+            <label style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);display:block;margin-bottom:8px;">How are you feeling?</label>
+            <input type="hidden" name="mood_rating" id="mood_rating" value="">
+            <div class="mood-faces">
+              <button type="button" class="mood-face" data-rating="1" title="Very Sad">😢</button>
+              <button type="button" class="mood-face" data-rating="2" title="Sad">😕</button>
+              <button type="button" class="mood-face" data-rating="3" title="Neutral">😐</button>
+              <button type="button" class="mood-face" data-rating="4" title="Happy">🙂</button>
+              <button type="button" class="mood-face" data-rating="5" title="Very Happy">😄</button>
             </div>
+            <p style="font-size:0.75rem;color:var(--text-light);text-align:center;margin-top:6px;">Optional — tap to select</p>
+          </div>
+          <div class="d-flex align-items-center justify-content-between">
+            <span id="wordCount" style="font-size:0.78rem;color:var(--text-light);">0 words</span>
+            <button type="submit" class="btn-haven btn-primary-haven btn-sm-haven">
+              <i class="fas fa-save"></i> Save Entry
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="haven-card mt-3 fade-in-delay-1" style="background:rgba(220,197,161,0.15);border-color:rgba(196,168,130,0.35);">
+        <h6 style="font-weight:700;margin-bottom:0.75rem;font-size:0.85rem;">
+          <i class="fas fa-seedling" style="color:var(--primary);margin-right:8px;"></i>Journaling Tips
+        </h6>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <div style="font-size:0.82rem;color:var(--text-muted);display:flex;gap:8px;"><i class="fas fa-circle" style="color:var(--accent-dark);font-size:0.4rem;margin-top:6px;flex-shrink:0;"></i>Write freely without judgment</div>
+          <div style="font-size:0.82rem;color:var(--text-muted);display:flex;gap:8px;"><i class="fas fa-circle" style="color:var(--accent-dark);font-size:0.4rem;margin-top:6px;flex-shrink:0;"></i>Set aside 10–15 minutes daily</div>
+          <div style="font-size:0.82rem;color:var(--text-muted);display:flex;gap:8px;"><i class="fas fa-circle" style="color:var(--accent-dark);font-size:0.4rem;margin-top:6px;flex-shrink:0;"></i>Focus on gratitude and positive moments</div>
+          <div style="font-size:0.82rem;color:var(--text-muted);display:flex;gap:8px;"><i class="fas fa-lock" style="color:var(--primary);font-size:0.7rem;margin-top:3px;flex-shrink:0;"></i>Your entries are private and secure</div>
         </div>
+      </div>
     </div>
 
-    <div class="journal-container">
-        <!-- Main Journal Area -->
-        <div class="journal-main">
-            <div class="haven-card">
-                <h4 class="mb-3">
-                    <i class="fas fa-pen text-haven-primary"></i> Write New Entry
-                </h4>
-                
-                <form method="post" class="needs-validation" novalidate>
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="text" class="form-label">What's on your mind today?</label>
-                        <textarea class="form-control" id="text" name="text" rows="8" 
-                                  placeholder="Share your thoughts, feelings, experiences, or anything that's on your mind..." 
-                                  required></textarea>
-                        <div class="invalid-feedback">
-                            Please write something in your journal entry.
-                        </div>
-                    </div>
+    <!-- ── Sidebar: past entries ── -->
+    <div>
+      <div class="haven-card fade-in-delay-1">
+        <h5 style="font-weight:700;margin-bottom:1rem;font-size:0.95rem;">
+          <i class="fas fa-history" style="color:var(--primary);margin-right:8px;"></i>Past Entries
+        </h5>
 
-                    <div class="mb-3">
-                        <label class="form-label">How are you feeling right now?</label>
-                        <div class="mood-rating d-flex justify-content-center gap-3">
-                            <input type="hidden" name="mood_rating" id="mood_rating" value="">
-                            <div class="star" data-rating="1" title="Very Sad">
-                                <i class="far fa-face-sad-tear fa-2x"></i>
-                            </div>
-                            <div class="star" data-rating="2" title="Sad">
-                                <i class="far fa-face-frown fa-2x"></i>
-                            </div>
-                            <div class="star" data-rating="3" title="Neutral">
-                                <i class="far fa-face-meh fa-2x"></i>
-                            </div>
-                            <div class="star" data-rating="4" title="Happy">
-                                <i class="far fa-face-smile fa-2x"></i>
-                            </div>
-                            <div class="star" data-rating="5" title="Very Happy">
-                                <i class="far fa-face-laugh-beam fa-2x"></i>
-                            </div>
-                        </div>
-                        <small class="text-muted d-block text-center mt-2">
-                            Optional: Select your current mood
-                        </small>
-                    </div>
-
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-haven btn-haven-primary">
-                            <i class="fas fa-save"></i> Save Entry
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <!-- Stats row -->
+        <div class="d-flex gap-3 mb-3">
+          <div class="text-center flex-fill" style="background:var(--bg);border-radius:var(--radius-xs);padding:0.75rem;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--primary);">{{ entries.count }}</div>
+            <div style="font-size:0.72rem;color:var(--text-light);">Entries</div>
+          </div>
+          <div class="text-center flex-fill" style="background:var(--bg);border-radius:var(--radius-xs);padding:0.75rem;">
+            <div style="font-size:1.4rem;">🌱</div>
+            <div style="font-size:0.72rem;color:var(--text-light);">Keep going</div>
+          </div>
         </div>
 
-        <!-- Journal Sidebar -->
-        <div class="journal-sidebar">
-            <div class="haven-card">
-                <h5 class="mb-3">
-                    <i class="fas fa-history text-haven-primary"></i> Recent Entries
-                </h5>
-                
-                {% if entries %}
-                    {% for entry in entries %}
-                    <div class="journal-entry">
-                        <div class="journal-date">
-                            <i class="fas fa-calendar"></i> {{ entry.created_at|date:"M d, Y" }}
-                        </div>
-                        <div class="journal-time">
-                            <i class="fas fa-clock"></i> {{ entry.created_at|time:"g:i A" }}
-                        </div>
-                        <div class="journal-text">
-                            {{ entry.text|truncatewords:15 }}
-                        </div>
-                        {% if entry.mood_rating %}
-                        <div class="journal-mood">
-                            <small class="text-muted">
-                                <i class="fas fa-heart"></i> Mood: 
-                                {% for i in "12345" %}
-                                    {% if forloop.counter <= entry.mood_rating %}
-                                        <i class="fas fa-star text-haven-primary"></i>
-                                    {% else %}
-                                        <i class="far fa-star text-muted"></i>
-                                    {% endif %}
-                                {% endfor %}
-                            </small>
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-book-open fa-3x mb-3"></i>
-                        <p>No journal entries yet.</p>
-                        <p>Start writing your first entry!</p>
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Journal Stats -->
-            <div class="haven-card mt-3">
-                <h5 class="mb-3">
-                    <i class="fas fa-chart-line text-haven-primary"></i> Your Progress
-                </h5>
-                
-                <div class="stats-grid">
-                    <div class="stat-item text-center">
-                        <div class="stat-number text-haven-primary">{{ entries.count }}</div>
-                        <div class="stat-label">Total Entries</div>
-                    </div>
-                    <div class="stat-item text-center">
-                        <div class="stat-number text-haven-secondary">
-                            {% if entries %}
-                                {% for entry in entries %}
-                                    {% if entry.mood_rating %}
-                                        {{ entry.mood_rating|add:0 }}
-                                    {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                0
-                            {% endif %}
-                        </div>
-                        <div class="stat-label">Avg Mood</div>
-                    </div>
+        <!-- Entry list — each card is clickable -->
+        {% if entries %}
+          {% for entry in entries %}
+          <div class="journal-entry-card journal-entry-clickable"
+               data-id="{{ entry.id }}"
+               data-url="{% url 'journal_detail' entry.id %}"
+               title="Click to read full entry"
+               style="cursor:pointer;">
+            <div class="d-flex align-items-start justify-content-between gap-2">
+              <div style="flex:1;min-width:0;">
+                <div class="journal-entry-date">
+                  <i class="fas fa-calendar-alt me-1"></i>{{ entry.created_at|date:"M d, Y" }} · {{ entry.created_at|time:"g:i A" }}
+                  {% if entry.mood_rating %}
+                    &nbsp;·&nbsp;
+                    {% if entry.mood_rating == 1 %}😢
+                    {% elif entry.mood_rating == 2 %}😕
+                    {% elif entry.mood_rating == 3 %}😐
+                    {% elif entry.mood_rating == 4 %}🙂
+                    {% else %}😄{% endif %}
+                  {% endif %}
                 </div>
-                
-                <div class="mt-3">
-                    <div class="progress">
-                        <div class="progress-bar bg-haven-primary" role="progressbar" 
-                             style="width: {% widthratio entries.count 30 100 %}%" 
-                             aria-valuenow="{{ entries.count }}" aria-valuemin="0" aria-valuemax="30">
-                            {{ entries.count }} {% if entries.count == 1 %}day{% else %}days{% endif %}
-                        </div>
-                    </div>
-                    <small class="text-muted">30-day journaling streak</small>
-                </div>
+                <div class="journal-entry-text">{{ entry.text|truncatewords:15 }}</div>
+              </div>
+              <i class="fas fa-chevron-right" style="color:var(--text-light);font-size:0.75rem;margin-top:4px;flex-shrink:0;"></i>
             </div>
-
-            <!-- Journal Tips -->
-            <div class="haven-card mt-3">
-                <h5 class="mb-3">
-                    <i class="fas fa-lightbulb text-haven-primary"></i> Journaling Tips
-                </h5>
-                
-                <div class="tips-list">
-                    <div class="tip-item">
-                        <i class="fas fa-heart text-haven-primary"></i>
-                        <span>Write freely without judgment</span>
-                    </div>
-                    <div class="tip-item">
-                        <i class="fas fa-clock text-haven-secondary"></i>
-                        <span>Set aside 10-15 minutes daily</span>
-                    </div>
-                    <div class="tip-item">
-                        <i class="fas fa-star text-haven-accent"></i>
-                        <span>Focus on gratitude and positive moments</span>
-                    </div>
-                    <div class="tip-item">
-                        <i class="fas fa-shield-alt text-haven-primary"></i>
-                        <span>Your entries are private and secure</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-3" style="color:var(--text-light);">
+            <i class="fas fa-book-open fa-2x mb-2" style="opacity:0.2;display:block;"></i>
+            <p style="font-size:0.82rem;">No entries yet. Start writing!</p>
+          </div>
+        {% endif %}
+      </div>
     </div>
+
+  </div>
 </div>
-{% endblock %}
 
-{% block extra_css %}
-<style>
-.journal-container {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 2rem;
-    margin: 2rem 0;
-}
+<!-- ── Entry Detail Modal ── -->
+<div id="entryModal" style="
+  display:none; position:fixed; inset:0; z-index:2000;
+  background:rgba(31,45,36,0.45); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center; padding:1.5rem;">
+  <div style="
+    background:var(--card); border-radius:var(--radius);
+    box-shadow:var(--shadow-lg); border:1px solid var(--border);
+    width:100%; max-width:600px; max-height:85vh;
+    display:flex; flex-direction:column; animation:fadeInUp 0.3s ease;">
 
-.journal-main {
-    background: var(--haven-white);
-    border-radius: var(--haven-border-radius);
-    box-shadow: var(--haven-shadow);
-    padding: 2rem;
-}
+    <!-- Modal header -->
+    <div style="padding:1.5rem 1.75rem 1rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+      <div>
+        <div id="modalDate" style="font-size:0.8rem;color:var(--text-light);margin-bottom:3px;"></div>
+        <div id="modalMood" style="font-size:1.1rem;"></div>
+      </div>
+      <button onclick="closeModal()" style="
+        background:var(--bg); border:1px solid var(--border);
+        border-radius:50%; width:34px; height:34px;
+        cursor:pointer; display:flex; align-items:center; justify-content:center;
+        color:var(--text-muted); font-size:0.9rem; transition:var(--transition);"
+        aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
 
-.journal-sidebar {
-    background: var(--haven-white);
-    border-radius: var(--haven-border-radius);
-    box-shadow: var(--haven-shadow);
-    padding: 1.5rem;
-    height: fit-content;
-}
+    <!-- Modal body — scrollable -->
+    <div id="modalBody" style="
+      padding:1.5rem 1.75rem; overflow-y:auto; flex:1;
+      font-size:0.95rem; color:var(--text); line-height:1.8;
+      white-space:pre-wrap; word-wrap:break-word;">
+    </div>
 
-.journal-entry {
-    background: var(--haven-peace);
-    border-radius: 10px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-left: 4px solid var(--haven-primary);
-    transition: var(--haven-transition);
-}
+    <!-- Modal footer -->
+    <div style="padding:1rem 1.75rem; border-top:1px solid var(--border); display:flex; justify-content:flex-end; flex-shrink:0;">
+      <button onclick="closeModal()" class="btn-haven btn-ghost-haven btn-sm-haven">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
 
-.journal-entry:hover {
-    background: var(--haven-sky);
-    transform: translateX(5px);
-}
-
-.journal-date, .journal-time {
-    font-size: 0.9rem;
-    color: var(--haven-gray);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.journal-text {
-    margin: 0.5rem 0;
-    line-height: 1.6;
-    color: var(--haven-dark);
-}
-
-.journal-mood {
-    margin-top: 0.5rem;
-}
-
-.mood-rating {
-    margin: 1rem 0;
-}
-
-.star {
-    cursor: pointer;
-    transition: var(--haven-transition);
-    padding: 0.5rem;
-    border-radius: 50%;
-}
-
-.star:hover {
-    transform: scale(1.1);
-    background: var(--haven-peace);
-}
-
-.star.active i {
-    color: var(--haven-primary);
-}
-
-.star.hover i {
-    color: var(--haven-warm);
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.stat-item {
-    padding: 1rem;
-    background: var(--haven-peace);
-    border-radius: 10px;
-}
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.stat-label {
-    font-size: 0.9rem;
-    color: var(--haven-gray);
-    font-weight: 500;
-}
-
-.tips-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-}
-
-.tip-item {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 0.5rem;
-    background: var(--haven-peace);
-    border-radius: 8px;
-    font-size: 0.9rem;
-}
-
-.tip-item i {
-    font-size: 1.1rem;
-}
-
-.progress {
-    height: 8px;
-    background: var(--haven-peace);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    background: linear-gradient(135deg, var(--haven-primary) 0%, var(--haven-warm) 100%);
-    transition: width 0.6s ease;
-}
-
-@media (max-width: 768px) {
-    .journal-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .mood-rating {
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-}
-</style>
+<!-- Auto-open if navigated directly to an entry URL -->
+{% if open_entry %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    openEntryData(
+      "{{ open_entry.created_at|date:'B d, Y' }} at {{ open_entry.created_at|time:'g:i A' }}",
+      "{% if open_entry.mood_rating == 1 %}😢{% elif open_entry.mood_rating == 2 %}😕{% elif open_entry.mood_rating == 3 %}😐{% elif open_entry.mood_rating == 4 %}🙂{% elif open_entry.mood_rating == 5 %}😄{% endif %}",
+      {{ open_entry.text|escapejs|safe }}
+    );
+  });
+</script>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Mood rating interaction
-    const stars = document.querySelectorAll('.star');
-    const moodInput = document.getElementById('mood_rating');
-    
-    stars.forEach((star, index) => {
-        star.addEventListener('click', function() {
-            const rating = index + 1;
-            moodInput.value = rating;
-            
-            // Update visual state
-            stars.forEach((s, i) => {
-                if (i < rating) {
-                    s.classList.add('active');
-                } else {
-                    s.classList.remove('active');
-                }
-            });
-        });
-        
-        star.addEventListener('mouseenter', function() {
-            const rating = index + 1;
-            stars.forEach((s, i) => {
-                if (i < rating) {
-                    s.classList.add('hover');
-                } else {
-                    s.classList.remove('hover');
-                }
-            });
-        });
+// ── Mood face selector ──
+document.querySelectorAll('.mood-face').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.mood-face').forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    document.getElementById('mood_rating').value = this.dataset.rating;
+  });
+});
+
+// ── Word count + auto-resize ──
+const textarea = document.getElementById('text');
+const wordCount = document.getElementById('wordCount');
+textarea.addEventListener('input', function() {
+  const words = this.value.trim().split(/\s+/).filter(w => w.length > 0);
+  wordCount.textContent = `${words.length} word${words.length !== 1 ? 's' : ''}`;
+  this.style.height = 'auto';
+  this.style.height = this.scrollHeight + 'px';
+});
+
+// ── Modal helpers ──
+const modal = document.getElementById('entryModal');
+
+function openEntryData(date, mood, text) {
+  document.getElementById('modalDate').textContent = date;
+  document.getElementById('modalMood').textContent = mood || '';
+  document.getElementById('modalBody').textContent = text;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Close on backdrop click
+modal.addEventListener('click', function(e) {
+  if (e.target === modal) closeModal();
+});
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ── Click handler for each entry card ──
+document.querySelectorAll('.journal-entry-clickable').forEach(card => {
+  card.addEventListener('click', function() {
+    const url = this.dataset.url;
+
+    // Show loading state
+    document.getElementById('modalDate').textContent = 'Loading...';
+    document.getElementById('modalMood').textContent = '';
+    document.getElementById('modalBody').textContent = '';
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Fetch full entry via AJAX
+    fetch(url, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => {
+      if (!r.ok) throw new Error('Failed to load entry');
+      return r.json();
+    })
+    .then(data => {
+      document.getElementById('modalDate').textContent = data.created_at;
+      document.getElementById('modalMood').textContent = data.mood_emoji || '';
+      document.getElementById('modalBody').textContent = data.text;
+    })
+    .catch(() => {
+      document.getElementById('modalDate').textContent = 'Error';
+      document.getElementById('modalBody').textContent = 'Could not load this entry. Please try again.';
     });
-    
-    // Clear hover effects when mouse leaves
-    document.querySelector('.mood-rating').addEventListener('mouseleave', function() {
-        stars.forEach(star => star.classList.remove('hover'));
-    });
-    
-    // Form validation
-    const form = document.querySelector('.needs-validation');
-    form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-    });
-    
-    // Auto-resize textarea
-    const textarea = document.getElementById('text');
-    textarea.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
-    });
-    
-    // Add word count
-    const wordCount = document.createElement('div');
-    wordCount.className = 'text-muted small mt-2';
-    textarea.parentNode.appendChild(wordCount);
-    
-    textarea.addEventListener('input', function() {
-        const words = this.value.trim().split(/\s+/).filter(word => word.length > 0);
-        wordCount.textContent = `${words.length} words`;
-    });
+  });
 });
 </script>
 {% endblock %}

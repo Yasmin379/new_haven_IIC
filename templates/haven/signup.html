@@ -1,80 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join HAVEN - Sign Up</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    {% load static %}
-    <link href="{% static 'css/haven.css' %}" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAVEN — Create Account</title>
+  <script>
+    (function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('haven-theme') || 'light'); })();
+  </script>
+  {% load static %}
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/haven.css' %}?v=99">
 </head>
 <body>
+<div class="landing-page">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
 
-<div class="signup-split">
-  <!-- Left Illustration Panel -->
-  <div class="signup-left">
-    <div class="signup-illustration">
-      <!-- Beautiful illustration image -->
-      <img src="https://img.freepik.com/free-vector/happy-students-jumping-celebrating_23-2147934881.jpg" 
-           alt="Happy students jumping and celebrating" 
-           class="auth-illustration-image">
+  <div class="auth-split" style="width:100%;">
+    <!-- LEFT -->
+    <div class="auth-left">
+      <div style="margin-bottom:2rem;">
+        <span style="font-size:1.3rem;font-weight:900;color:var(--primary);">HAVEN<span style="display:inline-block;width:7px;height:7px;background:var(--accent-dark);border-radius:50%;margin-left:4px;vertical-align:middle;"></span></span>
+      </div>
+      <img src="https://img.freepik.com/free-vector/mental-health-awareness-concept_23-2148514643.jpg"
+           alt="Mental wellness illustration" class="auth-illustration">
+      <div class="auth-left-tagline">
+        <h1>Start your<br>wellness <em>journey</em></h1>
+        <p>A calm, private space built for students who want to thrive — mentally and academically.</p>
+      </div>
     </div>
-  </div>
 
-  <!-- Right Form Panel -->
-  <div class="signup-right">
-    <div class="signup-form-card">
-      <div class="brand-title">HAVEN</div>
-      <h1 class="signup-title">Create your account</h1>
-      <p class="signup-subtitle">Join your safe, supportive community</p>
+    <!-- RIGHT -->
+    <div class="auth-right">
+      <div class="auth-form-wrap" style="max-width:440px;">
+        <div class="auth-brand"><i class="fas fa-leaf" style="font-size:1.1rem;"></i> HAVEN</div>
+        <h2>Create account</h2>
+        <p class="subtitle">Join your supportive community</p>
 
-      <form method="post" class="auth-form mt-4">
-        {% csrf_token %}
-        <div class="form-group mb-3">
-          <label for="id_username" class="form-label">Username</label>
-          <input type="text" name="username" id="id_username" class="form-control" placeholder="Choose a username" required>
-        </div>
-        <div class="form-group mb-3">
-          <label for="id_email" class="form-label">Email</label>
-          <input type="email" name="email" id="id_email" class="form-control" placeholder="Enter your email" required>
-        </div>
-        <div class="form-group mb-3">
-          <label for="id_password1" class="form-label">Password</label>
-          <input type="password" name="password1" id="id_password1" class="form-control" placeholder="Create a password" required>
-        </div>
-        <div class="form-group mb-3">
-          <label for="id_password2" class="form-label">Confirm Password</label>
-          <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirm your password" required>
-        </div>
-        <div class="form-group mb-3">
-          <label for="id_gender" class="form-label">Gender</label>
-          <select name="gender" id="id_gender" class="form-control" required>
-            <option value="">Select Gender</option>
-            <option value="M">Male</option>
-            <option value="F">Female</option>
-            <option value="O">Other</option>
-          </select>
-        </div>
-        <div class="form-group mb-4">
-          <label for="id_user_role" class="form-label">Account Type</label>
-          <select name="user_role" id="id_user_role" class="form-control" required>
-            <option value="">Select Account Type</option>
-            <option value="user">User - Regular member</option>
-            <option value="counselor">Counselor - Mental health professional</option>
-            <option value="admin">Admin - System administrator</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-auth-submit w-100">Create Account</button>
-      </form>
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert-haven alert-danger-haven mb-3">
+            <i class="fas fa-circle-xmark"></i> {{ message }}
+          </div>
+          {% endfor %}
+        {% endif %}
 
-      <div class="auth-switch mt-3">
-        <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+        <form method="post">
+          {% csrf_token %}
+          <div class="input-group-haven">
+            <label for="id_username">Username</label>
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" name="username" id="id_username" class="haven-input" placeholder="Choose a username" required>
+          </div>
+          <div class="input-group-haven">
+            <label for="id_email">Email</label>
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" name="email" id="id_email" class="haven-input" placeholder="Your email address" required>
+          </div>
+          <div class="input-group-haven">
+            <label for="id_password1">Password</label>
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" name="password1" id="id_password1" class="haven-input" placeholder="Create a password" required>
+            <button type="button" class="toggle-password" onclick="togglePwd('id_password1',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
+          </div>
+          <div class="input-group-haven">
+            <label for="id_password2">Confirm Password</label>
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" name="password2" id="id_password2" class="haven-input" placeholder="Confirm your password" required>
+            <button type="button" class="toggle-password" onclick="togglePwd('id_password2',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
+          </div>
+          <div class="input-group-haven">
+            <label for="id_gender">Gender</label>
+            <i class="fas fa-venus-mars input-icon"></i>
+            <select name="gender" id="id_gender" class="haven-input" required>
+              <option value="">Select gender</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+              <option value="O">Prefer not to say</option>
+            </select>
+          </div>
+          <div class="input-group-haven">
+            <label for="id_user_role">Account Type</label>
+            <i class="fas fa-id-badge input-icon"></i>
+            <select name="user_role" id="id_user_role" class="haven-input" required>
+              <option value="">Select account type</option>
+              <option value="user">Student / User</option>
+              <option value="counselor">Counselor / Specialist</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-auth">Create Account</button>
+        </form>
+        <div class="auth-switch">Already have an account? <a href="{% url 'login' %}">Sign in</a></div>
       </div>
     </div>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function togglePwd(id, btn) {
+  const input = document.getElementById(id);
+  const icon = btn.querySelector('i');
+  input.type = input.type === 'password' ? 'text' : 'password';
+  icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+}
+(function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('haven-theme') || 'light'); })();
+</script>
 </body>
 </html>

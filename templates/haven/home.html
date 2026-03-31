@@ -1,82 +1,297 @@
-{% extends 'haven/base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAVEN — Your Mental Wellness Space</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-{% block title %}Welcome to HAVEN{% endblock %}
+    body {
+      min-height: 100vh;
+      font-family: 'DM Sans', sans-serif;
+      background: #F5EFE6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
 
-{% block content %}
-<div class="auth-container">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <div class="auth-card fade-in">
-                    <h1 class="auth-title">
-                        <i class="fas fa-heart text-haven-primary"></i> HAVEN
-                    </h1>
-                    <p class="auth-subtitle">Your Mental Health Companion</p>
-                    <div class="life-beautiful">
-                        LIFE IS BEAUTIFUL
-                    </div>
-                    <div class="decorative-icons mb-4">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-seedling"></i>
-                        <i class="fas fa-heart"></i>
-                        <i class="fas fa-sun"></i>
-                        <i class="fas fa-butterfly"></i>
-                    </div>
+    /* ── Gradient background ── */
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 10%, #E8D9C5 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 90%, #c8d4c9 0%, transparent 55%),
+                  radial-gradient(ellipse at 60% 40%, #dde5de 0%, transparent 45%),
+                  #F5EFE6;
+      z-index: 0;
+    }
 
-                    <p class="lead mb-4">
-                        A safe space for your mental wellness journey with AI-powered support, 
-                        professional specialists, and personalized tools.
-                    </p>
+    /* ── Organic blobs ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(72px);
+      opacity: 0.28;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 {
+      width: 520px; height: 520px;
+      background: #E8D9C5;
+      top: -160px; left: -160px;
+    }
+    .blob-2 {
+      width: 420px; height: 420px;
+      background: #b5c4b6;
+      bottom: -120px; right: -120px;
+    }
+    .blob-3 {
+      width: 280px; height: 280px;
+      background: #d4c4ad;
+      top: 55%; left: 55%;
+      transform: translate(-50%, -50%);
+      opacity: 0.18;
+    }
 
-                    <div class="row mb-4">
-                        <div class="col-md-4 mb-3">
-                            <div class="feature-icon">
-                                <i class="fas fa-robot text-haven-primary"></i>
-                            </div>
-                            <h5>AI Companion</h5>
-                            <p class="text-muted">Chat with BUDDY, your 24/7 mental health support</p>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="feature-icon">
-                                <i class="fas fa-user-md text-haven-secondary"></i>
-                            </div>
-                            <h5>Specialists</h5>
-                            <p class="text-muted">Connect with verified mental health professionals</p>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="feature-icon">
-                                <i class="fas fa-shield-alt text-haven-accent"></i>
-                            </div>
-                            <h5>Privacy First</h5>
-                            <p class="text-muted">Your identity is protected with anonymous usernames</p>
-                        </div>
-                    </div>
+    /* ── Center card ── */
+    .center-card {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 3.5rem 2.5rem 3rem;
+      max-width: 520px;
+      width: 90%;
+      animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
 
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                        <a href="{% url 'signup' %}" class="btn btn-haven btn-haven-primary btn-lg">
-                            <i class="fas fa-user-plus"></i> Get Started
-                        </a>
-                        <a href="{% url 'login' %}" class="btn btn-haven btn-haven-secondary btn-lg">
-                            <i class="fas fa-sign-in-alt"></i> Sign In
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Brand ── */
+    .brand {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #7A8F7B;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-dot {
+      width: 6px; height: 6px;
+      background: #6B7D6D;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* ── Heading ── */
+    .headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      line-height: 1.15;
+      color: #2F3E34;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.5px;
+    }
+    .headline em {
+      font-style: italic;
+      color: #6B7D6D;
+    }
+
+    .subtext {
+      font-size: 1rem;
+      color: #7A8A7D;
+      line-height: 1.7;
+      max-width: 360px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* ── Illustration ── */
+    .illustration-wrap {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #e8ddd0, #d4e0d5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2.5rem;
+      box-shadow: 0 8px 40px rgba(107,125,109,0.15), 0 2px 8px rgba(107,125,109,0.08);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .illustration-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    /* Fallback SVG illustration */
+    .illustration-svg {
+      width: 130px;
+      height: 130px;
+      opacity: 0.75;
+    }
+
+    /* ── CTA Button ── */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 40px;
+      background: #6B7D6D;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 20px rgba(107,125,109,0.25);
+    }
+    .cta-btn:hover {
+      background: #556057;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(107,125,109,0.32);
+      color: white;
+      text-decoration: none;
+    }
+    .cta-btn svg {
+      width: 18px; height: 18px;
+      transition: transform 0.2s ease;
+    }
+    .cta-btn:hover svg { transform: translateX(3px); }
+
+    /* ── Footer note ── */
+    .footer-note {
+      margin-top: 2.5rem;
+      font-size: 0.78rem;
+      color: #A8B5AA;
+      letter-spacing: 0.01em;
+    }
+    .footer-note a {
+      color: #6B7D6D;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer-note a:hover { text-decoration: underline; }
+
+    /* ── Decorative dots ── */
+    .dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #c8d4c9;
+    }
+    .dot.active { background: #6B7D6D; width: 18px; border-radius: 3px; }
+
+    @media (max-width: 480px) {
+      .center-card { padding: 2.5rem 1.5rem 2rem; }
+      .illustration-wrap { width: 180px; height: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background layers -->
+  <div class="bg-gradient"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Centered content -->
+  <div class="center-card">
+
+    <!-- Brand -->
+    <div class="brand">
+      <span class="brand-dot"></span>
+      HAVEN
+      <span class="brand-dot"></span>
     </div>
-</div>
-{% endblock %}
 
-{% block extra_css %}
-<style>
-.feature-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
+    <!-- Headline -->
+    <h1 class="headline">
+      It's OK Not To<br>Be <em>OKAY</em>
+    </h1>
+    <p class="subtext">
+      We are here to support your mental wellness journey — gently, privately, and always.
+    </p>
 
-.feature-icon i {
-    animation: float 3s ease-in-out infinite;
-}
-</style>
-{% endblock %}
+    <!-- Illustration -->
+    <div class="illustration-wrap">
+      <!-- Inline SVG: calm face / meditation style -->
+      <svg class="illustration-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background circle -->
+        <circle cx="100" cy="100" r="100" fill="#e8ddd0"/>
+        <!-- Body / shoulders -->
+        <ellipse cx="100" cy="175" rx="52" ry="30" fill="#c8b89a" opacity="0.5"/>
+        <!-- Neck -->
+        <rect x="88" y="138" width="24" height="22" rx="8" fill="#d4b896" opacity="0.7"/>
+        <!-- Head -->
+        <ellipse cx="100" cy="110" rx="38" ry="42" fill="#e8c9a0" opacity="0.85"/>
+        <!-- Hair -->
+        <ellipse cx="100" cy="78" rx="38" ry="22" fill="#8B6F47" opacity="0.55"/>
+        <ellipse cx="68" cy="100" rx="10" ry="26" fill="#8B6F47" opacity="0.45"/>
+        <ellipse cx="132" cy="100" rx="10" ry="26" fill="#8B6F47" opacity="0.45"/>
+        <!-- Closed eyes (peaceful) -->
+        <path d="M82 108 Q88 104 94 108" stroke="#5a3e28" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <path d="M106 108 Q112 104 118 108" stroke="#5a3e28" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <!-- Gentle smile -->
+        <path d="M90 124 Q100 131 110 124" stroke="#5a3e28" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <!-- Cheek blush -->
+        <ellipse cx="82" cy="118" rx="8" ry="5" fill="#e8a090" opacity="0.25"/>
+        <ellipse cx="118" cy="118" rx="8" ry="5" fill="#e8a090" opacity="0.25"/>
+        <!-- Small leaf accent -->
+        <path d="M148 55 C155 45 165 50 160 62 C155 74 145 68 148 55Z" fill="#6B7D6D" opacity="0.5"/>
+        <path d="M148 55 L160 62" stroke="#6B7D6D" stroke-width="1.2" opacity="0.4"/>
+        <path d="M38 140 C32 130 40 122 48 128 C56 134 50 145 38 140Z" fill="#7A8F7B" opacity="0.4"/>
+      </svg>
+    </div>
+
+    <!-- Dots indicator -->
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <!-- CTA -->
+    <a href="{% url 'login' %}" class="cta-btn">
+      Let Us Help You
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+
+    <!-- Footer note -->
+    <p class="footer-note">
+      Already have an account? <a href="{% url 'login' %}">Sign in</a>
+      &nbsp;·&nbsp;
+      New here? <a href="{% url 'signup' %}">Create account</a>
+    </p>
+
+  </div>
+
+</body>
+</html>
