@@ -13,12 +13,16 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
-from django.db import transaction
+from django.db import transaction, models
 from django.conf import settings
-from opentelemetry import context
-import requests
+from django.shortcuts import render
 
-from .rag_engine import retrieve, build_prompt
+# RAG and AI imports
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_chroma import Chroma
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_core.messages import HumanMessage, SystemMessage
+import google.generativeai as genai
 
 from .models import (
     UserProfile, SpecialistProfile, JournalEntry, CounselorBooking,
@@ -111,6 +115,31 @@ Your life has value, and things can get better. Please stay safe. 🌟
         }
 
 
+# ── Role-based access decorators ──────────────────────────────────────────────
+
+def student_required(view_func):
+    """Redirect counselors away from student-only pages."""
+    from functools import wraps
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated and hasattr(request.user, 'specialistprofile'):
+            messages.warning(request, 'That page is for students only.')
+            return redirect('specialist_dashboard')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+def counselor_required(view_func):
+    """Redirect students away from counselor-only pages."""
+    from functools import wraps
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated and not hasattr(request.user, 'specialistprofile'):
+            messages.warning(request, 'That page is for counselors only.')
+            return redirect('user_dashboard')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -174,6 +203,7 @@ def logout_view(request):
 
 
 @login_required
+@student_required
 def user_dashboard(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     if request.user.first_name or request.user.last_name:
@@ -225,24 +255,41 @@ def user_profile(request):
 
 
 @login_required
+@counselor_required
 def specialist_dashboard(request):
     if not hasattr(request.user, 'specialistprofile'):
         messages.error(request, 'Access denied. This area is for specialists only.')
         return redirect('user_dashboard')
+    
     specialist = request.user.specialistprofile
+    
+    # Get upcoming bookings (showing only anonymous usernames)
     upcoming_bookings = CounselorBooking.objects.filter(
-        specialist=specialist, status__in=['pending', 'confirmed'], date__gte=date.today()
+        specialist=specialist,
+        status__in=['pending', 'confirmed'],
+        date__gte=date.today()
     ).order_by('date', 'time')
-    recent_bookings = CounselorBooking.objects.filter(specialist=specialist).order_by('-date', '-time')[:10]
+    
+    # Get recent bookings
+    recent_bookings = CounselorBooking.objects.filter(
+        specialist=specialist
+    ).order_by('-date', '-time')[:10]
+    
     context = {
-        'specialist': specialist,
-        'upcoming_bookings': upcoming_bookings,
-        'recent_bookings': recent_bookings,
+        'specialist':        specialist,
+        'counselor_name':    counselor_name,
+        'upcoming_sessions': upcoming_sessions,
+        'session_history':   session_history,
+        'pending_bookings':  pending_bookings,
     }
+    
     return render(request, 'haven/specialist_dashboard.html', context)
 
 
+# --- Feature Views ---
+
 @login_required
+@student_required
 def journal_view(request):
     if request.method == 'POST':
         text = request.POST.get('text')
@@ -273,7 +320,17 @@ def journal_detail(request, entry_id):
     return render(request, 'haven/journal.html', {'entries': entries, 'open_entry': entry})
 
 
+@require_http_methods(["DELETE"])
 @login_required
+def journal_delete(request, entry_id):
+    """Delete a journal entry — only the owner can delete their own entry."""
+    entry = get_object_or_404(JournalEntry, id=entry_id, user=request.user)
+    entry.delete()
+    return JsonResponse({'success': True, 'deleted_id': entry_id})
+
+
+@login_required
+@student_required
 def mood_check_view(request):
     if request.method == 'POST':
         phq2_q1 = int(request.POST.get('phq2_q1', 0))
@@ -296,6 +353,7 @@ def mood_check_view(request):
 
 
 @login_required
+@student_required
 def study_log_view(request):
     if request.method == 'POST':
         duration = int(request.POST.get('duration', 0))
@@ -327,8 +385,42 @@ def study_log_view(request):
 
 
 @login_required
+def get_counselors(request):
+    """
+    API endpoint — returns all active counselors for the booking dropdown.
+    A counselor is 'active' if they have a SpecialistProfile and their
+    Django user account is active (is_active=True).
+    The list updates in real time: add/remove a SpecialistProfile in admin
+    and the next dropdown fetch reflects it immediately.
+    """
+    counselors = (
+        SpecialistProfile.objects
+        .filter(user__is_active=True)          # only active user accounts
+        .select_related('user')                # single JOIN, no N+1
+        .order_by('user__first_name', 'user__last_name')
+    )
+
+    data = []
+    for sp in counselors:
+        full_name = sp.user.get_full_name().strip()
+        # Fall back to username if no name is set
+        display_name = full_name if full_name else sp.user.username
+        data.append({
+            "id":        sp.id,
+            "name":      display_name,
+            "specialty": sp.get_specialty_display(),
+            "verified":  sp.is_verified,
+        })
+
+    return JsonResponse({"counselors": data})
+
+
+@login_required
+@student_required
 def booking_view(request):
+    """Counselor booking system"""
     specialists = SpecialistProfile.objects.filter(is_verified=True)
+    
     if request.method == 'POST':
         specialist_id = request.POST.get('specialist')
         date_str = request.POST.get('date')
@@ -336,62 +428,106 @@ def booking_view(request):
         concern = request.POST.get('concern')
         if specialist_id and date_str and time_str and concern:
             specialist = get_object_or_404(SpecialistProfile, id=specialist_id)
-            profile = request.user.userprofile
-            CounselorBooking.objects.create(
-                client_username=profile.cheerful_username, specialist=specialist,
+            profile = request.user.profile
+            
+            booking = CounselorBooking.objects.create(
+                client_username=profile.cheerful_username,
+                specialist=specialist,
                 date=datetime.strptime(date_str, '%Y-%m-%d').date(),
                 time=datetime.strptime(time_str, '%H:%M').time(), concern=concern
             )
             messages.success(request, f'Booking request sent to {specialist.user.get_full_name()}. You will be contacted soon.')
             return redirect('booking')
-    return render(request, 'haven/booking.html', {'specialists': specialists})
+    
+    context = {
+        'specialists': specialists,
+    }
+    
+    return render(request, 'haven/booking.html', context)
 
 
 @login_required
+@student_required
 def chat_view(request):
+    """Chat interface with BUDDY"""
+    # Get or create active chat session
     session, created = ChatSession.objects.get_or_create(
-        user=request.user, is_active=True,
+        user=request.user,
+        is_active=True,
         defaults={'session_id': str(uuid.uuid4())}
     )
-    chat_messages = ChatMessage.objects.filter(session=session).order_by('timestamp')
-    return render(request, 'haven/chat.html', {'session': session, 'messages': chat_messages})
+    
+    # Get recent messages
+    messages = ChatMessage.objects.filter(session=session).order_by('timestamp')
+    
+    context = {
+        'session': session,
+        'messages': messages,
+    }
+    
+    return render(request, 'haven/chat.html', context)
 
 
-@csrf_exempt
 @require_http_methods(["POST"])
 def chat_with_ai(request):
-    """Guardian Protocol chat API — RAG + local Ollama, zero data leaves machine"""
+    """Guardian Protocol chat API endpoint"""
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()
+        
         if not user_message:
-            return JsonResponse({'response': 'Please enter a message.', 'status': 'error'})
-
+            return JsonResponse({
+                'response': 'Please enter a message.',
+                'status': 'error'
+            })
+        
+        # Get user profile
         try:
-            profile = request.user.userprofile
-        except Exception:
-            return JsonResponse({'response': 'User profile not found.', 'status': 'error'})
-
+            profile = request.user.profile
+        except UserProfile.DoesNotExist:
+            return JsonResponse({
+                'response': 'User profile not found. Please contact support.',
+                'status': 'error'
+            })
+        
+        # Initialize Guardian Protocol
         guardian = GuardianProtocol()
+        
+        # Process message through Guardian Protocol
         result = guardian.process_message(user_message, profile)
-
-        session, _ = ChatSession.objects.get_or_create(
-            user=request.user, is_active=True,
+        
+        # Get or create chat session
+        session, created = ChatSession.objects.get_or_create(
+            user=request.user,
+            is_active=True,
             defaults={'session_id': str(uuid.uuid4())}
         )
-        ChatMessage.objects.create(session=session, message_type='user', content=user_message, is_emergency=result['is_emergency'])
-        ChatMessage.objects.create(session=session, message_type='ai', content=result['response'], is_emergency=result['is_emergency'])
-
+        
+        # Save user message
+        ChatMessage.objects.create(
+            session=session,
+            message_type='user',
+            content=user_message,
+            is_emergency=result['is_emergency']
+        )
+        
+        # Save AI response
+        ChatMessage.objects.create(
+            session=session,
+            message_type='ai',
+            content=result['response'],
+            is_emergency=result['is_emergency']
+        )
+        
         return JsonResponse({
             'response': result['response'],
             'status': result['status'],
             'is_emergency': result['is_emergency']
         })
-
+        
     except Exception as e:
-        print(f"[HAVEN Chat Error] {e}")
         return JsonResponse({
-            'response': "I'm here for you. Please try again in a moment.",
+            'response': 'I apologize, but I\'m experiencing technical difficulties. Please try again later or reach out to a mental health professional if you need immediate support.',
             'status': 'error',
             'is_emergency': False
         })
@@ -406,6 +542,7 @@ def landing(request):
 
 
 @login_required
+@student_required
 def relax(request):
     from .models import MediaPlaylist
     breathing = MediaPlaylist.objects.filter(category='RELAX', content_type='BREATHING', is_active=True).order_by('order')
@@ -420,6 +557,7 @@ def relax(request):
 
 
 @login_required
+@student_required
 def study_with_me_view(request):
     from .models import MediaPlaylist, StudyBackgroundMusic, StudyVideo
     music_tracks = StudyBackgroundMusic.objects.filter(is_active=True).order_by('order', 'title')

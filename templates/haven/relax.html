@@ -14,7 +14,7 @@
 
   <div class="row g-4 mb-4">
     <div class="col-md-6">
-      <div class="haven-card text-center fade-in" style="background:linear-gradient(135deg,rgba(79,111,82,0.06),rgba(220,197,161,0.15));">
+      <div class="haven-card text-center fade-in" style="background:linear-gradient(135deg,rgba(107,125,109,0.08),rgba(220,197,161,0.15));">
         <h5 style="font-weight:700;margin-bottom:0.5rem;font-size:0.95rem;">
           <i class="fas fa-wind" style="color:var(--primary);margin-right:8px;"></i>Guided Breathing
         </h5>
@@ -32,7 +32,7 @@
           <!-- Progress arc overlay (SVG) -->
           <svg style="position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);" viewBox="0 0 180 180">
             <circle id="progressArc" cx="90" cy="90" r="87"
-              fill="none" stroke="#4F6F52" stroke-width="3"
+              fill="none" stroke="#6B7D6D" stroke-width="3"
               stroke-linecap="round" stroke-dasharray="547" stroke-dashoffset="547"
               style="transition:stroke-dashoffset 0.1s linear; opacity:0.5;"/>
           </svg>
@@ -40,12 +40,12 @@
 
         <!-- Phase label -->
         <p id="breathInstruction" style="
-          font-weight:700; color:#4F6F52; font-size:1.05rem;
+          font-weight:700; color:#6B7D6D; font-size:1.05rem;
           margin:0.25rem 0 0.1rem; letter-spacing:0.02em;">
           Inhale...
         </p>
         <!-- Countdown -->
-        <p id="breathCount" style="font-size:1.6rem;font-weight:800;color:#4F6F52;margin:0;line-height:1;">4</p>
+        <p id="breathCount" style="font-size:1.6rem;font-weight:800;color:#6B7D6D;margin:0;line-height:1;">4</p>
         <p style="font-size:0.75rem;color:var(--text-light);margin-top:0.25rem;">seconds</p>
 
         <!-- Controls -->
@@ -180,9 +180,9 @@ const startBtn = document.getElementById('breathStartBtn');
 const stopBtn  = document.getElementById('breathStopBtn');
 
 const PHASES = [
-  { name: 'Inhale...',  dur: 4000, scale: 1.55, ease: 'cubic-bezier(0.4,0,0.6,1)', color: '#4F6F52' },
-  { name: 'Hold...',    dur: 2000, scale: 1.55, ease: 'linear',                     color: '#C4A882' },
-  { name: 'Exhale...', dur: 6000, scale: 1.0,  ease: 'cubic-bezier(0.4,0,0.6,1)', color: '#3A5A40' },
+  { name: 'Inhale...',  dur: 4000, scale: 1.55, ease: 'cubic-bezier(0.4,0,0.6,1)', color: '#6B7D6D' },
+  { name: 'Hold...',    dur: 2000, scale: 1.55, ease: 'linear',                     color: '#6B7D6D' },
+  { name: 'Exhale...', dur: 6000, scale: 1.0,  ease: 'cubic-bezier(0.4,0,0.6,1)', color: '#5F7161' },
 ];
 const ARC_CIRC = 547; // 2π × 87
 

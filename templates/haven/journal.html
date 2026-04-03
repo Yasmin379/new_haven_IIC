@@ -51,7 +51,7 @@
         </form>
       </div>
 
-      <div class="haven-card mt-3 fade-in-delay-1" style="background:rgba(220,197,161,0.15);border-color:rgba(196,168,130,0.35);">
+      <div class="haven-card mt-3 fade-in-delay-1" style="background:rgba(220,197,161,0.15);border-color:rgba(125,211,252,0.30);">
         <h6 style="font-weight:700;margin-bottom:0.75rem;font-size:0.85rem;">
           <i class="fas fa-seedling" style="color:var(--primary);margin-right:8px;"></i>Journaling Tips
         </h6>
@@ -87,10 +87,11 @@
         {% if entries %}
           {% for entry in entries %}
           <div class="journal-entry-card journal-entry-clickable"
+               id="entry-card-{{ entry.id }}"
                data-id="{{ entry.id }}"
                data-url="{% url 'journal_detail' entry.id %}"
                title="Click to read full entry"
-               style="cursor:pointer;">
+               style="cursor:pointer;position:relative;">
             <div class="d-flex align-items-start justify-content-between gap-2">
               <div style="flex:1;min-width:0;">
                 <div class="journal-entry-date">
@@ -106,7 +107,17 @@
                 </div>
                 <div class="journal-entry-text">{{ entry.text|truncatewords:15 }}</div>
               </div>
-              <i class="fas fa-chevron-right" style="color:var(--text-light);font-size:0.75rem;margin-top:4px;flex-shrink:0;"></i>
+              <div class="d-flex align-items-center gap-2" style="flex-shrink:0;">
+                <!-- Delete button -->
+                <button class="journal-delete-btn"
+                        data-id="{{ entry.id }}"
+                        title="Delete this entry"
+                        onclick="event.stopPropagation(); confirmDelete({{ entry.id }});"
+                        aria-label="Delete entry">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+                <i class="fas fa-chevron-right" style="color:var(--text-light);font-size:0.75rem;margin-top:4px;"></i>
+              </div>
             </div>
           </div>
           {% endfor %}
@@ -119,6 +130,36 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ── Delete Confirmation Dialog ── -->
+<div id="deleteDialog" style="
+  display:none; position:fixed; inset:0; z-index:3000;
+  background:rgba(15,23,42,0.45); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center; padding:1.5rem;">
+  <div style="
+    background:var(--card); border-radius:var(--radius);
+    box-shadow:var(--shadow-lg); border:1px solid var(--border);
+    width:100%; max-width:380px; padding:2rem;
+    animation:fadeInUp 0.25s ease; text-align:center;">
+    <div style="width:52px;height:52px;border-radius:50%;background:rgba(239,68,68,0.10);
+                display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+      <i class="fas fa-trash-alt" style="color:#EF4444;font-size:1.2rem;"></i>
+    </div>
+    <h5 style="font-weight:700;margin-bottom:0.5rem;font-size:1rem;color:var(--text);">Delete this entry?</h5>
+    <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6;">
+      This journal entry will be permanently deleted and cannot be recovered.
+    </p>
+    <div class="d-flex gap-3 justify-content-center">
+      <button id="cancelDeleteBtn" class="btn-haven btn-ghost-haven btn-sm-haven" style="min-width:90px;">
+        Cancel
+      </button>
+      <button id="confirmDeleteBtn" class="btn-haven btn-sm-haven"
+              style="background:#EF4444;color:#fff;min-width:90px;">
+        <i class="fas fa-trash-alt me-1"></i>Delete
+      </button>
+    </div>
   </div>
 </div>
 
@@ -180,6 +221,30 @@
 {% endblock %}
 
 {% block extra_js %}
+<style>
+/* ── Delete button on past entry cards ── */
+.journal-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-light);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.journal-delete-btn:hover {
+  background: rgba(239,68,68,0.12);
+  color: #EF4444;
+  transform: scale(1.12);
+}
+</style>
 <script>
 // ── Mood face selector ──
 document.querySelectorAll('.mood-face').forEach(btn => {
@@ -255,6 +320,73 @@ document.querySelectorAll('.journal-entry-clickable').forEach(card => {
       document.getElementById('modalDate').textContent = 'Error';
       document.getElementById('modalBody').textContent = 'Could not load this entry. Please try again.';
     });
+  });
+});
+
+// ── Delete journal entry ──
+const deleteDialog  = document.getElementById('deleteDialog');
+const confirmDelBtn = document.getElementById('confirmDeleteBtn');
+const cancelDelBtn  = document.getElementById('cancelDeleteBtn');
+let pendingDeleteId = null;
+
+function confirmDelete(entryId) {
+  pendingDeleteId = entryId;
+  deleteDialog.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteDialog() {
+  deleteDialog.style.display = 'none';
+  document.body.style.overflow = '';
+  pendingDeleteId = null;
+}
+
+cancelDelBtn.addEventListener('click', closeDeleteDialog);
+
+deleteDialog.addEventListener('click', function(e) {
+  if (e.target === deleteDialog) closeDeleteDialog();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && deleteDialog.style.display === 'flex') closeDeleteDialog();
+});
+
+confirmDelBtn.addEventListener('click', function() {
+  if (!pendingDeleteId) return;
+  const id  = pendingDeleteId;
+  const url = '/journal/' + id + '/delete/';
+
+  confirmDelBtn.disabled = true;
+  confirmDelBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Deleting\u2026';
+
+  fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'X-CSRFToken':      '{{ csrf_token }}',
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('Server error ' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
+    if (data.success) {
+      const card = document.getElementById('entry-card-' + id);
+      if (card) {
+        card.style.transition = 'opacity 0.3s, transform 0.3s';
+        card.style.opacity    = '0';
+        card.style.transform  = 'translateX(12px)';
+        setTimeout(function() { card.remove(); }, 300);
+      }
+      closeDeleteDialog();
+    }
+  })
+  .catch(function(err) {
+    console.error('Delete failed:', err);
+    confirmDelBtn.disabled = false;
+    confirmDelBtn.innerHTML = '<i class="fas fa-trash-alt me-1"></i>Delete';
+    alert('Could not delete entry. Please try again.');
   });
 });
 </script>

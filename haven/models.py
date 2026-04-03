@@ -8,7 +8,7 @@ import string
 
 class UserProfile(models.Model):
     """Extended user profile with cheerful username generation"""
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     cheerful_username = models.CharField(max_length=50, unique=True, blank=True)
     gender = models.CharField(max_length=10, choices=[
         ('male', 'Male'),
@@ -122,13 +122,21 @@ class JournalEntry(models.Model):
 
 class CounselorBooking(models.Model):
     """Booking system for counselor appointments"""
+    # Direct FK to the student user — enables querying bookings per student
+    student = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='bookings',
+        null=True, blank=True,   # null for legacy rows created before this field
+        help_text="The student who made this booking"
+    )
     client_username = models.CharField(max_length=50, help_text="Anonymous cheerful username")
     specialist = models.ForeignKey(SpecialistProfile, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
     concern = models.TextField(help_text="Brief description of the concern")
     status = models.CharField(max_length=20, choices=[
-        ('pending', 'Pending'),
+        ('pending',   'Pending'),
         ('confirmed', 'Confirmed'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')

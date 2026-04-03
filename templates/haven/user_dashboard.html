@@ -7,20 +7,21 @@
 <style>
   /* Nuclear specificity — beats Bootstrap resets on any element */
   html body .card-title {
-    font-family: 'Poppins', sans-serif !important;
-    font-size: 1.2rem !important;
+    font-family: 'DM Sans', 'Poppins', sans-serif !important;
+    font-size: 1.05rem !important;
     font-weight: 700 !important;
-    color: #2F3E34 !important;
+    color: #2A3828 !important;
     line-height: 1.3 !important;
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 0.4rem !important;
     display: block !important;
   }
   html body .card-desc {
-    font-size: 0.84rem !important;
-    color: #7A8A7D !important;
-    line-height: 1.65 !important;
+    font-size: 0.82rem !important;
+    color: #6B7280 !important;
+    line-height: 1.6 !important;
     margin-bottom: 1rem !important;
     display: block !important;
+    flex: 1;
   }
   [data-theme="dark"] html body .card-title,
   [data-theme="dark"] .card-title { color: #E8E4DC !important; }
@@ -67,7 +68,7 @@
       <div class="feature-icon-wrap icon-sage"><i class="fas fa-comment-dots"></i></div>
       <span class="card-title">BUDDY — AI Chat</span>
       <span class="card-desc">Talk to your AI companion anytime. Empathetic, private, always available.</span>
-      <span class="btn-haven btn-primary-haven btn-sm-haven">Start Chat <i class="fas fa-arrow-right"></i></span>
+      <span class="btn-haven btn-primary-haven" style="margin-top:auto;">Start Chat &rarr;</span>
     </a>
 
     <!-- Journal -->
@@ -79,7 +80,7 @@
       {% else %}
         <span class="card-desc">Express your thoughts freely in your private digital journal.</span>
       {% endif %}
-      <span class="btn-haven btn-accent-haven btn-sm-haven">Write Entry <i class="fas fa-pen"></i></span>
+      <span class="btn-haven btn-accent-haven" style="margin-top:auto;">Write Entry <i class="fas fa-pen"></i></span>
     </a>
 
     <!-- Study Tracker -->
@@ -87,8 +88,8 @@
       <div class="feature-icon-wrap icon-olive"><i class="fas fa-graduation-cap"></i></div>
       <span class="card-title">Study Tracker</span>
       <span class="card-desc">Log your study sessions and maintain a healthy academic routine.</span>
-      <div class="progress-haven mb-2"><div class="progress-haven-bar" style="width:40%;"></div></div>
-      <span class="btn-haven btn-ghost-haven btn-sm-haven">Track Now</span>
+      <div class="progress-haven" style="margin-top:auto;margin-bottom:0.75rem;"><div class="progress-haven-bar" style="width:40%;"></div></div>
+      <span class="btn-haven btn-outline-haven">Track Now</span>
     </a>
 
     <!-- Relax Zone -->
@@ -96,7 +97,7 @@
       <div class="feature-icon-wrap icon-cream"><i class="fas fa-spa"></i></div>
       <span class="card-title">Relax Zone</span>
       <span class="card-desc">Breathing exercises, yoga, ASMR, and chill music — your peace sanctuary.</span>
-      <span class="btn-haven btn-accent-haven btn-sm-haven">Take a Break <i class="fas fa-leaf"></i></span>
+      <span class="btn-haven btn-accent-haven" style="margin-top:auto;">Take a Break <i class="fas fa-leaf"></i></span>
     </a>
 
     <!-- Book Session -->
@@ -104,7 +105,7 @@
       <div class="feature-icon-wrap icon-muted"><i class="fas fa-calendar-check"></i></div>
       <span class="card-title">Book Session</span>
       <span class="card-desc">Connect with verified mental health specialists for professional support.</span>
-      <span class="btn-haven btn-outline-haven btn-sm-haven">Schedule</span>
+      <span class="btn-haven btn-outline-haven" style="margin-top:auto;">Schedule</span>
     </a>
 
     <!-- Mood Tracker -->
@@ -119,7 +120,7 @@
         <button class="mood-btn" onclick="logMood(this)" title="Happy">😊</button>
         <button class="mood-btn" onclick="logMood(this)" title="Great">🤩</button>
       </div>
-      <a href="{% url 'mood_check' %}" class="btn-haven btn-outline-haven btn-sm-haven mt-2">Full Check-in</a>
+      <a href="{% url 'mood_check' %}" class="btn-haven btn-outline-haven mt-2">Full Check-in</a>
     </div>
 
   </div>
@@ -130,7 +131,7 @@
     <div class="col-md-6">
       <div class="haven-card h-100">
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin:0;color:#2F3E34;">
+          <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin:0;color:#2F3E2F;">
             <i class="fas fa-book-open" style="color:var(--accent-dark);margin-right:8px;"></i>Recent Journal
           </h5>
           <a href="{% url 'journal' %}" class="btn-haven btn-ghost-haven btn-sm-haven">View All</a>
@@ -157,7 +158,7 @@
     <div class="col-md-6">
       <div class="haven-card h-100">
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin:0;color:#2F3E34;">
+          <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin:0;color:#2F3E2F;">
             <i class="fas fa-heart" style="color:var(--primary);margin-right:8px;"></i>Mood History
           </h5>
           <a href="{% url 'mood_check' %}" class="btn-haven btn-primary-haven btn-sm-haven">Check In</a>
@@ -188,10 +189,10 @@
 
   <!-- Study With Me banner -->
   <div class="haven-card mt-4 fade-in-delay-3"
-       style="background:linear-gradient(135deg,rgba(107,125,109,0.07),rgba(232,217,197,0.3));border-color:rgba(107,125,109,0.15);">
+       style="background:linear-gradient(135deg,rgba(107,125,109,0.10),rgba(122,143,123,0.18));border-color:rgba(107,125,109,0.22);">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
       <div>
-        <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:4px;color:#2F3E34;">
+        <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:4px;color:#2F3E2F;">
           <i class="fas fa-users" style="color:var(--secondary);margin-right:8px;"></i>Study With Me
         </h5>
         <p style="color:var(--text-muted);margin:0;font-size:0.875rem;">Focus music, Pomodoro timer, study tips, and motivation videos.</p>
@@ -199,6 +200,27 @@
       <a href="{% url 'study_with_me' %}" class="btn-haven btn-primary-haven btn-sm-haven">
         Open Session <i class="fas fa-play ms-1"></i>
       </a>
+    </div>
+  </div>
+
+  <!-- ── MY SESSIONS ── -->
+  <div class="haven-card mt-4 fade-in-delay-3">
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+      <h5 style="font-family:'Poppins','DM Sans',sans-serif;font-weight:700;font-size:1.05rem;margin:0;color:#2F3E2F;">
+        <i class="fas fa-calendar-check" style="color:var(--primary);margin-right:8px;"></i>My Sessions
+      </h5>
+      <div class="d-flex align-items-center gap-2">
+        <span id="sessionsUpdated" style="font-size:0.72rem;color:var(--text-light);"></span>
+        <a href="{% url 'booking' %}" class="btn-haven btn-primary-haven btn-sm-haven">
+          <i class="fas fa-plus me-1"></i> Book New
+        </a>
+      </div>
+    </div>
+    <div id="mySessionsList">
+      <div style="text-align:center;padding:1.5rem;color:var(--text-light);">
+        <i class="fas fa-spinner fa-spin" style="display:block;font-size:1.2rem;margin-bottom:0.5rem;"></i>
+        Loading sessions…
+      </div>
     </div>
   </div>
 
@@ -211,6 +233,106 @@ function logMood(btn) {
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
+
+/* ── MY SESSIONS — live polling ── */
+var SESSION_API = '{% url "my_sessions_api" %}';
+var prevConfirmedIds = new Set();
+
+  var STATUS_STYLES = {
+  pending:   { bg: 'rgba(196,168,130,0.2)',  color: '#7A5C30', label: 'Pending'   },
+  confirmed: { bg: 'rgba(107,125,109,0.15)', color: '#2E4A30', label: 'Confirmed' },
+  cancelled: { bg: 'rgba(160,60,60,0.12)',   color: '#7A2828', label: 'Cancelled' },
+  completed: { bg: 'rgba(79,111,82,0.22)',   color: '#1E3A20', label: 'Completed' },
+};
+
+function sessionBadge(status) {
+  var st = STATUS_STYLES[status] || STATUS_STYLES.pending;
+  return '<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;' +
+         'font-size:0.72rem;font-weight:700;background:' + st.bg + ';color:' + st.color + ';">' +
+         st.label + '</span>';
+}
+
+function fmtDate(dateStr, timeStr) {
+  var d = new Date(dateStr + 'T' + timeStr);
+  return d.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) +
+         ' &nbsp;·&nbsp; ' +
+         d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+}
+
+function renderSessions(bookings) {
+  var list = document.getElementById('mySessionsList');
+  if (!list) return;
+
+  if (!bookings.length) {
+    list.innerHTML =
+      '<div style="text-align:center;padding:1.5rem;color:var(--text-light);">' +
+        '<i class="fas fa-calendar-xmark fa-2x" style="opacity:0.2;display:block;margin-bottom:0.5rem;"></i>' +
+        'No sessions yet. <a href="/booking/" style="color:#6B7D6D;font-weight:600;">Book one now</a>' +
+      '</div>';
+    return;
+  }
+
+  list.innerHTML = bookings.map(function(b) {
+    return (
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;' +
+             'padding:0.875rem 1rem;background:var(--bg);border-radius:var(--radius-xs);' +
+             'margin-bottom:0.5rem;border-left:3px solid ' +
+             (b.status === 'confirmed' ? '#6B7D6D' : b.status === 'cancelled' ? '#8B3A3A' : '#7A8F7B') + ';">' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:0.875rem;font-weight:700;color:var(--text);margin-bottom:2px;">' +
+            b.counselor_name + ' &mdash; ' + b.specialty +
+          '</div>' +
+          '<div style="font-size:0.78rem;color:var(--text-muted);">' + fmtDate(b.date, b.time) + '</div>' +
+          (b.concern ? '<div style="font-size:0.75rem;color:var(--text-light);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;" title="' + b.concern + '">' + b.concern + '</div>' : '') +
+          (b.status === 'confirmed' && b.notes ? '<div style="font-size:0.78rem;color:#2E4A30;margin-top:4px;background:rgba(107,125,109,0.08);padding:4px 8px;border-radius:6px;">📝 ' + b.notes + '</div>' : '') +
+        '</div>' +
+        '<div style="flex-shrink:0;">' + sessionBadge(b.status) + '</div>' +
+      '</div>'
+    );
+  }).join('');
+}
+
+function fetchMySessions() {
+  fetch(SESSION_API, {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var bookings = data.bookings || [];
+
+      /* Detect newly confirmed bookings and show a toast */
+      bookings.forEach(function(b) {
+        if (b.status === 'confirmed' && !prevConfirmedIds.has(b.id)) {
+          if (prevConfirmedIds.size > 0) showConfirmedToast(b);
+          prevConfirmedIds.add(b.id);
+        }
+      });
+
+      renderSessions(bookings);
+
+      var el = document.getElementById('sessionsUpdated');
+      if (el) el.textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+    })
+    .catch(function(err) { console.error('Sessions fetch error:', err); });
+}
+
+function showConfirmedToast(booking) {
+  var toast = document.createElement('div');
+  toast.style.cssText =
+    'position:fixed;top:80px;left:50%;transform:translateX(-50%);' +
+    'background:#6B7D6D;color:white;padding:12px 24px;border-radius:50px;' +
+    'font-size:0.875rem;font-weight:600;z-index:9999;' +
+    'box-shadow:0 4px 20px rgba(0,0,0,0.2);';
+  toast.textContent = '✅ Session confirmed with ' + booking.counselor_name + '!';
+  document.body.appendChild(toast);
+  setTimeout(function() {
+    toast.style.transition = 'opacity 0.4s';
+    toast.style.opacity = '0';
+    setTimeout(function() { toast.remove(); }, 400);
+  }, 5000);
+}
+
+/* Initial load + poll every 15 s */
+fetchMySessions();
+setInterval(fetchMySessions, 15000);
 </script>
 
 <script>
@@ -293,7 +415,7 @@ function logMood(btn) {
     var laterBtn = document.createElement('button');
     laterBtn.textContent = 'Later';
     laterBtn.style.cssText =
-      'width:100%;padding:7px 10px;background:transparent;border:1.5px solid #d4c9b8;' +
+      'width:100%;padding:7px 10px;background:transparent;border:1.5px solid #e2e8f0;' +
       'border-radius:50px;font-size:0.75rem;font-weight:600;color:#7a8a7d;' +
       'cursor:pointer;font-family:inherit;';
 

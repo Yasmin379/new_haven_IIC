@@ -23,10 +23,7 @@
             <label for="specialist">Select Specialist</label>
             <i class="fas fa-user-md input-icon"></i>
             <select name="specialist" id="specialist" class="haven-input" required>
-              <option value="">Choose a specialist...</option>
-              {% for spec in specialists %}
-              <option value="{{ spec.id }}">Dr. {{ spec.user.get_full_name }} — {{ spec.get_specialty_display }}</option>
-              {% endfor %}
+              <option value="">Loading counselors...</option>
             </select>
           </div>
           <div class="row g-3">
@@ -86,4 +83,55 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var select = document.getElementById('specialist');
+  if (!select) return;
+
+  fetch('{% url "counselors_api" %}', {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(function (r) {
+    if (!r.ok) throw new Error('Network error ' + r.status);
+    return r.json();
+  })
+  .then(function (data) {
+    var counselors = data.counselors || [];
+
+    // Clear loading placeholder
+    select.innerHTML = '';
+
+    if (counselors.length === 0) {
+      var opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'No counselors available at the moment';
+      select.appendChild(opt);
+      return;
+    }
+
+    // Default empty option
+    var blank = document.createElement('option');
+    blank.value = '';
+    blank.textContent = 'Choose a specialist...';
+    select.appendChild(blank);
+
+    counselors.forEach(function (c) {
+      var opt = document.createElement('option');
+      opt.value = c.id;
+      // Show specialty and verified badge in the label
+      var label = c.name + ' \u2014 ' + c.specialty;
+      if (c.verified) label += ' \u2714';   // ✔ for verified
+      opt.textContent = label;
+      select.appendChild(opt);
+    });
+  })
+  .catch(function (err) {
+    console.error('Could not load counselors:', err);
+    select.innerHTML = '<option value="">Could not load specialists — please refresh</option>';
+  });
+})();
+</script>
 {% endblock %}
