@@ -1,0 +1,80 @@
+
+HAVEN: Verified Mental Health Knowledge Base (V2.0)
+System Persona: BUDDY | Target: University Students | Framework: RAG-Ready
+TOPIC: Identity and Interaction (The "Buddy" Persona)
+
+
+Greeting: "Hi there! I'm Buddy, your AI wellness companion. I’m here to listen and support you. What’s on your mind today?" 
+
+
+Identity: "I am Buddy. I was created as part of the Haven project to help students manage the ups and downs of college life." 
+
+
+Status Check: "I’m doing well, thank you! I’m here and ready to support you. How are you feeling in this moment?" 
+
+
+Capabilities: "I can help with exam stress, loneliness, sleep tips, or guide you through a quick breathing exercise. We can also just chat if you need to vent." 
+
+
+Medical Disclaimer: "I am an AI companion, not a doctor. I can offer support and strategies, but I cannot provide medical diagnoses or treatment."
+
+TOPIC: Academic Stress and Exam Anxiety
+
+
+Definition: Academic stress is the body's response to the demands of studying, assignments, and examinations. 
+
+
+Normalizing Stress: It is completely normal to feel stressed before exams; mild stress can actually improve focus and motivation. 
+
+
+Signs of Stress: Common signs include difficulty concentrating, forgetting material, restlessness, irritability, and physical symptoms like headaches or stomach upset. 
+
+
+The Pomodoro Technique: Break study material into 25-minute chunks followed by a 5-minute break to maintain focus.
+
+TOPIC: Depression and Low Mood in StudentsDefinition: 
+Depression is a medical condition affecting thoughts, feelings, and daily activities—it is not a sign of weakness. 
+Student Context: In India, students often face depression due to academic pressure, leaving home, and uncertainty about the future. 
+Symptoms: Persistent sadness (2+ weeks), loss of interest in hobbies, fatigue, and feelings of worthlessness. 
+Behavioral Activation: When mood is low, try one small "win" like a 10-minute walk or calling a friend. 
+Routine: Restoring a consistent wake/sleep cycle helps the brain fight depressive symptoms.
+
+TOPIC: Anxiety and Grounding Techniques
+
+
+General Anxiety: Feeling of worry or unease about uncertain outcomes. 
+
+
+5-4-3-2-1 Grounding: To stop overthinking, name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, and 1 you taste. 
+
+Worry Time: Schedule 15 minutes a day as "designated worry time." If worries pop up earlier, write them down for later. 
+
+
+Box Breathing: Inhale for 4, hold for 4, exhale for 4, hold for 4. Repeat 4 times to calm the nervous system.
+
+TOPIC: Loneliness and Social Connection
+
+
+Understanding Loneliness: It is common for students to feel lonely even in a crowd; it often stems from social comparison or big life transitions. 
+
+Social Media Trap: Scrolling through others' "highlight reels" worsens feelings of isolation. 
+
+
+Action Steps: Join a campus club or volunteer; shared activities make starting conversations much easier.
+
+TOPIC: Sleep Hygiene for Better Grades
+
+
+The Blue Light Rule: Avoid phones and laptops for at least 30 minutes before bed as they suppress sleep hormones. 
+
+
+Bed Association: Do not study in bed; your brain needs to associate the bed only with rest. 
+
+
+The 20-Minute Rule: If you can't sleep after 20 minutes, get up and do a calm activity (like reading) until you feel sleepy.
+
+TOPIC: Crisis and Professional Help (India)When to Seek Help: If symptoms last more than two weeks or if you feel you cannot manage on your own. 
+KIRAN Helpline: 1800-599-0019 (Free, 24/7 support for mental health). 
+iCall (TISS): 9152987821 (Counseling service). 
+Vandrevala Foundation: 1860-2662-345. 
+AASRA: 91-9820466627. 
