@@ -8,71 +8,123 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/haven.css' %}?v=99">
+  <link rel="stylesheet" href="{% static 'css/haven.css' %}?v=103">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
 {% if user.is_authenticated %}
-<nav class="haven-navbar">
-  <div class="container">
-    <div class="d-flex align-items-center justify-content-between w-100">
 
-      <a class="haven-brand" href="{% url 'user_dashboard' %}">
-        <span>HAVEN</span><span class="haven-brand-dot"></span>
-      </a>
+  {% if is_counselor %}
+  <!-- ═══════════════════════════════════════════
+       COUNSELOR NAVBAR  (specialist only)
+  ═══════════════════════════════════════════ -->
+  <nav class="haven-navbar">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between w-100">
 
-      <!-- Desktop nav -->
-      <ul class="navbar-nav flex-row gap-1 d-none d-lg-flex align-items-center">
-        <li><a class="nav-link" href="{% url 'user_dashboard' %}">Home</a></li>
-        <li><a class="nav-link" href="{% url 'chat' %}">Chat</a></li>
-        <li><a class="nav-link" href="{% url 'journal' %}">Journal</a></li>
-        <li><a class="nav-link" href="{% url 'study' %}">Study</a></li>
-        <li><a class="nav-link" href="{% url 'relax' %}">Relax</a></li>
-        <li><a class="nav-link" href="{% url 'mood_check' %}">Mood</a></li>
-        <li><a class="nav-link" href="{% url 'booking' %}">Sessions</a></li>
-      </ul>
+        <a class="haven-brand" href="{% url 'specialist_dashboard' %}">
+          <span>HAVEN</span><span class="haven-brand-dot"></span>
+          <span style="font-size:0.65rem;font-weight:600;background:rgba(107,125,109,0.15);color:#5F7161;padding:2px 8px;border-radius:50px;margin-left:6px;">Counselor</span>
+        </a>
 
-      <div class="d-flex align-items-center gap-3">
-        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"></button>
+        <ul class="navbar-nav flex-row gap-1 d-none d-lg-flex align-items-center">
+          <li><a class="nav-link" href="{% url 'specialist_dashboard' %}"><i class="fas fa-gauge-high me-1"></i>Dashboard</a></li>
+          <li><a class="nav-link" href="{% url 'user_profile' %}"><i class="fas fa-user me-1"></i>Profile</a></li>
+        </ul>
 
-        <div class="position-relative" id="profileDropdownWrap">
-          <button class="profile-btn" id="profileBtn">
-            <i class="fas fa-leaf" style="font-size:0.8rem;"></i>
-            <span class="d-none d-md-inline">{{ user.profile.cheerful_username|default:user.username }}</span>
-            <i class="fas fa-chevron-down" style="font-size:0.65rem;opacity:0.6;"></i>
-          </button>
-          <div class="haven-dropdown" id="profileDropdown">
-            <a href="{% url 'user_profile' %}"><i class="fas fa-user" style="width:16px;"></i> Profile</a>
-            <a href="{% url 'mood_check' %}"><i class="fas fa-heart" style="width:16px;"></i> Mood Check</a>
-            <hr>
-            <a href="{% url 'logout' %}" style="color:#8B3A3A;"><i class="fas fa-sign-out-alt" style="width:16px;"></i> Logout</a>
+        <div class="d-flex align-items-center gap-3">
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"></button>
+          <div class="position-relative" id="profileDropdownWrap">
+            <button class="profile-btn" id="profileBtn">
+              <i class="fas fa-user-md" style="font-size:0.8rem;"></i>
+              <span class="d-none d-md-inline">{{ user.username }}</span>
+              <i class="fas fa-chevron-down" style="font-size:0.65rem;opacity:0.6;"></i>
+            </button>
+            <div class="haven-dropdown" id="profileDropdown">
+              <a href="{% url 'specialist_dashboard' %}"><i class="fas fa-gauge-high" style="width:16px;"></i> Dashboard</a>
+              <a href="{% url 'user_profile' %}"><i class="fas fa-user" style="width:16px;"></i> Profile</a>
+              <hr>
+              <a href="{% url 'logout' %}" style="color:#8B3A3A;"><i class="fas fa-sign-out-alt" style="width:16px;"></i> Logout</a>
+            </div>
           </div>
+          <button class="navbar-toggler d-lg-none" id="mobileMenuBtn" aria-label="Menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
         </div>
+      </div>
 
-        <button class="navbar-toggler d-lg-none" id="mobileMenuBtn" aria-label="Menu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+      <div class="collapse" id="mobileMenu">
+        <ul class="navbar-nav flex-column py-3 gap-1">
+          <li><a class="nav-link" href="{% url 'specialist_dashboard' %}">Dashboard</a></li>
+          <li><a class="nav-link" href="{% url 'user_profile' %}">Profile</a></li>
+          <li><a class="nav-link" href="{% url 'logout' %}" style="color:#8B3A3A;">Logout</a></li>
+        </ul>
       </div>
     </div>
+  </nav>
 
-    <!-- Mobile menu -->
-    <div class="collapse" id="mobileMenu">
-      <ul class="navbar-nav flex-column py-3 gap-1">
-        <li><a class="nav-link" href="{% url 'user_dashboard' %}">Home</a></li>
-        <li><a class="nav-link" href="{% url 'chat' %}">Chat</a></li>
-        <li><a class="nav-link" href="{% url 'journal' %}">Journal</a></li>
-        <li><a class="nav-link" href="{% url 'study' %}">Study Tracker</a></li>
-        <li><a class="nav-link" href="{% url 'study_with_me' %}">Study With Me</a></li>
-        <li><a class="nav-link" href="{% url 'relax' %}">Relax Zone</a></li>
-        <li><a class="nav-link" href="{% url 'mood_check' %}">Mood Check</a></li>
-        <li><a class="nav-link" href="{% url 'booking' %}">Book Session</a></li>
-        <li><a class="nav-link" href="{% url 'user_profile' %}">Profile</a></li>
-        <li><a class="nav-link" href="{% url 'logout' %}" style="color:#8B3A3A;">Logout</a></li>
-      </ul>
+  {% else %}
+  <!-- ═══════════════════════════════════════════
+       STUDENT NAVBAR  (students only)
+  ═══════════════════════════════════════════ -->
+  <nav class="haven-navbar">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between w-100">
+
+        <a class="haven-brand" href="{% url 'user_dashboard' %}">
+          <span>HAVEN</span><span class="haven-brand-dot"></span>
+        </a>
+
+        <ul class="navbar-nav flex-row gap-1 d-none d-lg-flex align-items-center">
+          <li><a class="nav-link" href="{% url 'user_dashboard' %}">Home</a></li>
+          <li><a class="nav-link" href="{% url 'chat' %}">Chat</a></li>
+          <li><a class="nav-link" href="{% url 'journal' %}">Journal</a></li>
+          <li><a class="nav-link" href="{% url 'study' %}">Study</a></li>
+          <li><a class="nav-link" href="{% url 'relax' %}">Relax</a></li>
+          <li><a class="nav-link" href="{% url 'mood_check' %}">Mood</a></li>
+          <li><a class="nav-link" href="{% url 'booking' %}">Sessions</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"></button>
+          <div class="position-relative" id="profileDropdownWrap">
+            <button class="profile-btn" id="profileBtn">
+              <i class="fas fa-leaf" style="font-size:0.8rem;"></i>
+              <span class="d-none d-md-inline">{{ user.profile.cheerful_username|default:user.username }}</span>
+              <i class="fas fa-chevron-down" style="font-size:0.65rem;opacity:0.6;"></i>
+            </button>
+            <div class="haven-dropdown" id="profileDropdown">
+              <a href="{% url 'user_profile' %}"><i class="fas fa-user" style="width:16px;"></i> Profile</a>
+              <a href="{% url 'mood_check' %}"><i class="fas fa-heart" style="width:16px;"></i> Mood Check</a>
+              <hr>
+              <a href="{% url 'logout' %}" style="color:#8B3A3A;"><i class="fas fa-sign-out-alt" style="width:16px;"></i> Logout</a>
+            </div>
+          </div>
+          <button class="navbar-toggler d-lg-none" id="mobileMenuBtn" aria-label="Menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="collapse" id="mobileMenu">
+        <ul class="navbar-nav flex-column py-3 gap-1">
+          <li><a class="nav-link" href="{% url 'user_dashboard' %}">Home</a></li>
+          <li><a class="nav-link" href="{% url 'chat' %}">Chat</a></li>
+          <li><a class="nav-link" href="{% url 'journal' %}">Journal</a></li>
+          <li><a class="nav-link" href="{% url 'study' %}">Study Tracker</a></li>
+          <li><a class="nav-link" href="{% url 'study_with_me' %}">Study With Me</a></li>
+          <li><a class="nav-link" href="{% url 'relax' %}">Relax Zone</a></li>
+          <li><a class="nav-link" href="{% url 'mood_check' %}">Mood Check</a></li>
+          <li><a class="nav-link" href="{% url 'booking' %}">Book Session</a></li>
+          <li><a class="nav-link" href="{% url 'user_profile' %}">Profile</a></li>
+          <li><a class="nav-link" href="{% url 'logout' %}" style="color:#8B3A3A;">Logout</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
+  {% endif %}
+
 {% endif %}
 
 {% if messages %}
@@ -112,8 +164,8 @@
 <script>
 (function(){
   const toggle = document.getElementById('darkToggle');
-  const html = document.documentElement;
-  const saved = localStorage.getItem('haven-theme') || 'light';
+  const html   = document.documentElement;
+  const saved  = localStorage.getItem('haven-theme') || 'light';
   html.setAttribute('data-theme', saved);
   if(toggle && saved === 'dark') toggle.classList.add('active');
   if(toggle) toggle.addEventListener('click', function(){
@@ -124,14 +176,14 @@
   });
 })();
 (function(){
-  const btn = document.getElementById('profileBtn');
+  const btn  = document.getElementById('profileBtn');
   const menu = document.getElementById('profileDropdown');
   if(!btn || !menu) return;
   btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('show'); });
   document.addEventListener('click', function(e){ if(!btn.contains(e.target) && !menu.contains(e.target)) menu.classList.remove('show'); });
 })();
 (function(){
-  const btn = document.getElementById('mobileMenuBtn');
+  const btn  = document.getElementById('mobileMenuBtn');
   const menu = document.getElementById('mobileMenu');
   if(!btn || !menu) return;
   btn.addEventListener('click', function(){ menu.classList.toggle('show'); });

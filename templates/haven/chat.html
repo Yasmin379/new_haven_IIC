@@ -9,9 +9,12 @@
     <!-- Sidebar -->
     <div class="chat-sidebar">
       <div class="chat-sidebar-title">Conversations</div>
-      <div class="chat-history-item active"><i class="fas fa-comment me-2" style="font-size:0.8rem;"></i>Current Session</div>
-      <div class="chat-history-item"><i class="fas fa-clock me-2" style="font-size:0.8rem;"></i>Yesterday</div>
-      <div class="chat-history-item"><i class="fas fa-clock me-2" style="font-size:0.8rem;"></i>2 days ago</div>
+      <div class="chat-history-item active" id="currentSessionTab" onclick="showCurrentChat()">
+        <i class="fas fa-comment me-2" style="font-size:0.8rem;"></i>Current Session
+      </div>
+      <div class="chat-history-item" id="historyTab" onclick="loadChatHistory()">
+        <i class="fas fa-clock me-2" style="font-size:0.8rem;"></i>Chat History
+      </div>
       <div style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--border);">
         <div class="alert-haven alert-warning-haven" style="font-size:0.75rem;padding:0.75rem;">
           <i class="fas fa-phone me-1"></i>
@@ -26,31 +29,19 @@
         <div class="buddy-avatar"><i class="fas fa-leaf"></i></div>
         <div>
           <div style="font-weight:700;font-size:0.95rem;">BUDDY</div>
-          <div class="buddy-status">Here for you · AI wellness companion</div>
+          <div class="buddy-status" id="buddyStatus">Here for you &middot; AI wellness companion</div>
         </div>
       </div>
 
+      <!-- Live chat area — always starts empty (fresh session) -->
       <div class="chat-messages-area" id="chatMessages">
-        {% for message in messages %}
-        <div class="msg-row {{ message.message_type }}">
-          <div class="msg-avatar {{ message.message_type }}">
-            {% if message.message_type == 'ai' %}<i class="fas fa-leaf" style="font-size:0.75rem;"></i>{% else %}<i class="fas fa-user" style="font-size:0.75rem;"></i>{% endif %}
-          </div>
-          <div>
-            <div class="msg-bubble {{ message.message_type }} {% if message.is_emergency %}emergency{% endif %}">
-              {{ message.content|linebreaks }}
-            </div>
-            <div class="msg-time">{{ message.timestamp|time:"g:i A" }}</div>
-          </div>
-        </div>
-        {% empty %}
-        <div style="text-align:center;padding:2.5rem 1rem;">
+        <div style="text-align:center;padding:2.5rem 1rem;" id="welcomeMsg">
           <div class="buddy-avatar" style="width:64px;height:64px;font-size:1.6rem;margin:0 auto 1rem;">
             <i class="fas fa-leaf"></i>
           </div>
-          <h4 style="font-weight:700;margin-bottom:0.5rem;font-size:1.1rem;">Hi, I'm BUDDY 🌿</h4>
+          <h4 style="font-weight:700;margin-bottom:0.5rem;font-size:1.1rem;">Hi, I'm BUDDY</h4>
           <p style="color:var(--text-muted);font-size:0.875rem;max-width:340px;margin:0 auto 1.5rem;line-height:1.65;">
-            I'm here to support you. Share what's on your mind — no judgment, just care.
+            I'm here to support you. Share what's on your mind &mdash; no judgment, just care.
           </p>
           <div class="suggested-chips">
             <button class="chip" onclick="sendSuggested('How can I manage stress?')">Stress Management</button>
@@ -60,10 +51,15 @@
             <button class="chip" onclick="sendSuggested('How do I build better relationships?')">Relationships</button>
           </div>
         </div>
-        {% endfor %}
       </div>
 
-      <div class="chat-input-bar">
+      <!-- History panel (hidden by default) -->
+      <div class="chat-messages-area" id="historyPanel" style="display:none;overflow-y:auto;">
+        <div id="historyContent" style="padding:1rem;"></div>
+      </div>
+
+      <!-- Input bar -->
+      <div class="chat-input-bar" id="chatInputBar">
         <form class="chat-input-form" id="chatForm">
           {% csrf_token %}
           <input type="text" id="messageInput" class="chat-input-field"
@@ -74,74 +70,237 @@
         </form>
       </div>
     </div>
+
   </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-const chatMessages = document.getElementById('chatMessages');
-const chatForm = document.getElementById('chatForm');
-const messageInput = document.getElementById('messageInput');
-const sendBtn = document.getElementById('sendBtn');
+(function () {
+  var chatMessages = document.getElementById('chatMessages');
+  var chatForm     = document.getElementById('chatForm');
+  var messageInput = document.getElementById('messageInput');
+  var sendBtn      = document.getElementById('sendBtn');
+  var historyPanel = document.getElementById('historyPanel');
+  var chatInputBar = document.getElementById('chatInputBar');
+  var csrfToken    = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-function scrollBottom() { chatMessages.scrollTop = chatMessages.scrollHeight; }
-function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+  function scrollBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
 
-function addMessage(content, type, isEmergency=false) {
-  const row = document.createElement('div');
-  row.className = `msg-row ${type}`;
-  const leafOrUser = type === 'ai'
-    ? '<i class="fas fa-leaf" style="font-size:0.75rem;"></i>'
-    : '<i class="fas fa-user" style="font-size:0.75rem;"></i>';
-  const bubbleClass = `msg-bubble ${type}${isEmergency ? ' emergency' : ''}`;
-  row.innerHTML = `
-    <div class="msg-avatar ${type}">${leafOrUser}</div>
-    <div>
-      <div class="${bubbleClass}">${content.replace(/\n/g,'<br>')}</div>
-      <div class="msg-time">${getTime()}</div>
-    </div>`;
-  chatMessages.appendChild(row);
+  function getTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  /* Safely escape HTML so no injected markup breaks the bubble */
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /*
+   * addMessage — renders ONE complete message string as a single bubble.
+   * Uses textContent for the bubble so the browser never splits characters.
+   */
+  function addMessage(content, type, isEmergency) {
+    /* Remove welcome screen on first message */
+    var welcome = document.getElementById('welcomeMsg');
+    if (welcome) { welcome.remove(); }
+
+    /* Guarantee content is a plain string — never an array or iterable */
+    var text = String(content);
+
+    var row = document.createElement('div');
+    row.className = 'msg-row ' + type;
+
+    var avatar = document.createElement('div');
+    avatar.className = 'msg-avatar ' + type;
+    avatar.innerHTML = type === 'ai'
+      ? '<i class="fas fa-leaf" style="font-size:0.75rem;"></i>'
+      : '<i class="fas fa-user" style="font-size:0.75rem;"></i>';
+
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble ' + type + (isEmergency ? ' emergency' : '');
+    /*
+     * Use textContent to set the message — this is the key fix.
+     * textContent treats the value as a plain string, never iterates
+     * over characters, and never inserts unwanted line breaks.
+     * We only swap \n -> <br> for intentional multi-line AI responses.
+     */
+    if (type === 'ai') {
+      bubble.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
+    } else {
+      /* User bubble: plain text, collapse any accidental newlines to spaces */
+      bubble.textContent = text.replace(/\n+/g, ' ');
+    }
+
+    var timeEl = document.createElement('div');
+    timeEl.className = 'msg-time';
+    timeEl.textContent = getTime();
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'msg-content-wrapper';
+    wrapper.appendChild(bubble);
+    wrapper.appendChild(timeEl);
+
+    row.appendChild(avatar);
+    row.appendChild(wrapper);
+    chatMessages.appendChild(row);
+    scrollBottom();
+  }
+
+  function showTyping() {
+    var row = document.createElement('div');
+    row.className = 'msg-row ai';
+    row.id = 'typingRow';
+    row.innerHTML =
+      '<div class="msg-avatar ai"><i class="fas fa-leaf" style="font-size:0.75rem;"></i></div>' +
+      '<div class="typing-bubble">' +
+        '<div class="typing-dot"></div>' +
+        '<div class="typing-dot"></div>' +
+        '<div class="typing-dot"></div>' +
+      '</div>';
+    chatMessages.appendChild(row);
+    scrollBottom();
+  }
+
+  function hideTyping() {
+    var el = document.getElementById('typingRow');
+    if (el) { el.remove(); }
+  }
+
+  function sendMessage(msg) {
+    /* Ensure msg is a plain string before doing anything */
+    var text = String(msg).trim();
+    if (!text) { return; }
+
+    addMessage(text, 'user', false);
+    messageInput.value = '';
+    sendBtn.disabled = true;
+    showTyping();
+
+    fetch('{% url "chat_api" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({ message: text })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      hideTyping();
+      var reply = data.response ? String(data.response) : "I'm here for you. Could you tell me more?";
+      addMessage(reply, 'ai', data.is_emergency || false);
+    })
+    .catch(function () {
+      hideTyping();
+      addMessage('Connection issue — please try again.', 'ai', false);
+    })
+    .finally(function () {
+      sendBtn.disabled = false;
+      messageInput.focus();
+    });
+  }
+
+  /* Submit only on button click or Enter key — never on keystroke */
+  chatForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    sendMessage(messageInput.value);
+  });
+
+  messageInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(messageInput.value);
+    }
+  });
+
+  function sendSuggested(msg) {
+    /* msg is a string literal from onclick — pass directly, never iterate */
+    messageInput.value = String(msg);
+    sendMessage(String(msg));
+  }
+  /* Expose to inline onclick handlers */
+  window.sendSuggested = sendSuggested;
+
+  /* ── Chat History ─────────────────────────────────────────────────────── */
+
+  function showCurrentChat() {
+    document.getElementById('currentSessionTab').classList.add('active');
+    document.getElementById('historyTab').classList.remove('active');
+    chatMessages.style.display = '';
+    historyPanel.style.display = 'none';
+    chatInputBar.style.display = '';
+    document.getElementById('buddyStatus').textContent = 'Here for you \u00b7 AI wellness companion';
+  }
+  window.showCurrentChat = showCurrentChat;
+
+  function loadChatHistory() {
+    document.getElementById('historyTab').classList.add('active');
+    document.getElementById('currentSessionTab').classList.remove('active');
+    chatMessages.style.display = 'none';
+    historyPanel.style.display = '';
+    chatInputBar.style.display = 'none';
+    document.getElementById('buddyStatus').textContent = 'Past conversations';
+
+    var container = document.getElementById('historyContent');
+    container.innerHTML = '<p style="color:var(--text-muted);text-align:center;font-size:0.875rem;">Loading...</p>';
+
+    fetch('{% url "chat_history_api" %}', { headers: { 'X-CSRFToken': csrfToken } })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.history || data.history.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted);text-align:center;font-size:0.875rem;padding:2rem 0;">No past conversations yet.</p>';
+        return;
+      }
+      container.innerHTML = '';
+      data.history.forEach(function (session) {
+        var sessionEl = document.createElement('div');
+        sessionEl.style.cssText = 'margin-bottom:1.5rem;border:1px solid var(--border);border-radius:12px;overflow:hidden;';
+
+        var header = document.createElement('div');
+        header.style.cssText = 'padding:0.6rem 1rem;background:var(--surface);font-size:0.78rem;color:var(--text-muted);font-weight:600;';
+        header.textContent = String(session.started_at);
+        sessionEl.appendChild(header);
+
+        session.messages.forEach(function (msg) {
+          var msgEl = document.createElement('div');
+          msgEl.style.cssText = 'padding:0.4rem 1rem;display:flex;gap:0.5rem;align-items:flex-start;' +
+            (msg.type === 'user' ? 'flex-direction:row-reverse;' : '');
+
+          var bubble = document.createElement('div');
+          bubble.style.cssText = 'font-size:0.85rem;padding:0.5rem 0.75rem;border-radius:10px;max-width:80%;' +
+            (msg.type === 'user'
+              ? 'background:var(--primary);color:#fff;'
+              : 'background:var(--surface);color:var(--text);border:1px solid var(--border);');
+
+          if (msg.type === 'user') {
+            bubble.textContent = String(msg.content);
+          } else {
+            bubble.innerHTML = escapeHtml(String(msg.content)).replace(/\n/g, '<br>');
+          }
+
+          msgEl.appendChild(bubble);
+          sessionEl.appendChild(msgEl);
+        });
+
+        container.appendChild(sessionEl);
+      });
+    })
+    .catch(function () {
+      container.innerHTML = '<p style="color:var(--text-muted);text-align:center;font-size:0.875rem;">Could not load history.</p>';
+    });
+  }
+  window.loadChatHistory = loadChatHistory;
+
+  messageInput.focus();
   scrollBottom();
-}
-
-function showTyping() {
-  const row = document.createElement('div');
-  row.className = 'msg-row ai'; row.id = 'typingRow';
-  row.innerHTML = `
-    <div class="msg-avatar ai"><i class="fas fa-leaf" style="font-size:0.75rem;"></i></div>
-    <div class="typing-bubble">
-      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
-    </div>`;
-  chatMessages.appendChild(row);
-  scrollBottom();
-}
-function hideTyping() { const el = document.getElementById('typingRow'); if(el) el.remove(); }
-
-function sendMessage(msg) {
-  if (!msg.trim()) return;
-  addMessage(msg, 'user');
-  messageInput.value = '';
-  sendBtn.disabled = true;
-  showTyping();
-  fetch('{% url "chat_api" %}', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
-    body: JSON.stringify({message: msg})
-  })
-  .then(r => r.json())
-  .then(data => {
-    hideTyping();
-    addMessage(data.response || "I'm here for you. Could you tell me more?", 'ai', data.is_emergency);
-  })
-  .catch(() => { hideTyping(); addMessage("Connection issue — please try again.", 'ai'); })
-  .finally(() => { sendBtn.disabled = false; messageInput.focus(); });
-}
-
-chatForm.addEventListener('submit', function(e) { e.preventDefault(); sendMessage(messageInput.value.trim()); });
-messageInput.addEventListener('keypress', function(e) { if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); chatForm.dispatchEvent(new Event('submit')); } });
-function sendSuggested(msg) { messageInput.value = msg; chatForm.dispatchEvent(new Event('submit')); }
-messageInput.focus();
-scrollBottom();
+}());
 </script>
 {% endblock %}

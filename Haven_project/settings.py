@@ -69,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'haven.context_processors.user_role',   # role flags in all templates
             ],
         },
     },
@@ -157,3 +158,34 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 # RAG Settings
 RAG_KNOWLEDGE_BASE_DIR = BASE_DIR / 'knowledge_base'
 RAG_VECTOR_STORE_DIR = BASE_DIR / 'vector_store'
+
+# ── Ollama (local LLM) ────────────────────────────────────────────────────────
+# All AI inference runs locally — no data leaves the machine.
+OLLAMA_URL     = os.getenv('OLLAMA_URL',     'http://localhost:11434/api/generate')
+OLLAMA_MODEL   = os.getenv('OLLAMA_MODEL',   'mistral')
+OLLAMA_TIMEOUT = int(os.getenv('OLLAMA_TIMEOUT', '60'))   # seconds
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{levelname}] {asctime} {module}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class':     'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'haven': {
+            'handlers':  ['console'],
+            'level':     'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
+    },
+}

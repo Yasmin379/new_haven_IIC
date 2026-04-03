@@ -15,6 +15,7 @@ urlpatterns = [
     # Feature URLs
     path('journal/', views.journal_view, name='journal'),
     path('journal/<int:entry_id>/', views.journal_detail, name='journal_detail'),
+    path('journal/<int:entry_id>/delete/', views.journal_delete, name='journal_delete'),
     path('mood-check/', views.mood_check_view, name='mood_check'),
     path('study/', views.study_log_view, name='study'),
     path('study-with-me/', views.study_with_me_view, name='study_with_me'),
@@ -26,6 +27,12 @@ urlpatterns = [
     
     # API Endpoints
     path('api/chat/', views.chat_with_ai, name='chat_api'),
+    path('api/chat-history/', views.chat_history_api, name='chat_history_api'),
+    path('api/counselors/', views.get_counselors, name='counselors_api'),
+    path('api/my-sessions/', views.api_my_sessions, name='my_sessions_api'),
+    path('api/booking-requests/', views.api_booking_requests, name='booking_requests_api'),
+    path('api/booking-requests/<int:booking_id>/status/', views.api_update_booking_status, name='booking_status_api'),
+    path('api/sessions-data/', views.api_sessions_data, name='sessions_data_api'),
     
     # Homepage / Landing
     path('', views.landing, name='home'),
